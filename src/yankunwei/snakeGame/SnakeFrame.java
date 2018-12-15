@@ -9,7 +9,6 @@ public class SnakeFrame extends JFrame {
         gameComponent = new GameComponent();
         this.add(gameComponent);
         this.pack();
-        System.out.println("INIT");
 //        this.setSize(1920, 1080);
     }
 }
