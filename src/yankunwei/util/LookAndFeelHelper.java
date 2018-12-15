@@ -2,45 +2,19 @@ package yankunwei.util;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 import java.util.stream.Stream;
 
 public class LookAndFeelHelper {
-    public static JPanel getNewLookAndFeelPanel(Component component){
+    public static JPanel getNewLookAndFeelPanel(Component parent, Component component){
         JPanel lookAndFeelPanel = new JPanel();
         UIManager.LookAndFeelInfo[] infos = UIManager.getInstalledLookAndFeels();
-        Arrays.stream(infos).forEach(lookAndFeelInfo -> {
-            JButton button = new JButton(lookAndFeelInfo.getName());
-            button.addActionListener(event -> {
-                try {
-                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                    SwingUtilities.updateComponentTreeUI(component);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+        for (JButton button: getFeelAndLookButtonArray(infos, parent, component)) {
             lookAndFeelPanel.add(button);
-        });
+        }
         return lookAndFeelPanel;
-    }
-
-    public static JButton[] getLookAndFeelButtonArray(Component component) {
-        Vector<JButton> buttons = new Vector<>();
-        UIManager.LookAndFeelInfo[] infos = UIManager.getInstalledLookAndFeels();
-        Arrays.stream(infos).forEach(lookAndFeelInfo -> {
-            JButton button = new JButton(lookAndFeelInfo.getClassName());
-            button.addActionListener(event -> {
-                try {
-                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-                    SwingUtilities.updateComponentTreeUI(component);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            buttons.add(button);
-        });
-        return buttons.toArray(new JButton[buttons.size()]);
     }
 
     public static void setWindowsLookAndFeel(Component component){
@@ -70,5 +44,28 @@ public class LookAndFeelHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static JButton[] getFeelAndLookButtonArray(Component parent, Component component) {
+        UIManager.LookAndFeelInfo[] infos = UIManager.getInstalledLookAndFeels();
+        return getFeelAndLookButtonArray(infos, parent, component);
+    }
+
+    private static JButton[] getFeelAndLookButtonArray(UIManager.LookAndFeelInfo[] infos, Component parent, Component component) {
+        ArrayList<JButton> buttons = new ArrayList<>(infos.length);
+        Arrays.stream(infos).forEach(lookAndFeelInfo -> {
+            JButton button = new JButton(lookAndFeelInfo.getName());
+            button.addActionListener(event -> {
+                try {
+                    UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
+                    SwingUtilities.updateComponentTreeUI(parent);
+                    SwingUtilities.updateComponentTreeUI(component);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            buttons.add(button);
+        });
+        return buttons.toArray(new JButton[infos.length]);
     }
 }
