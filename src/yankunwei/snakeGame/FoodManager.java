@@ -1,5 +1,7 @@
 package yankunwei.snakeGame;
 
+import yankunwei.util.SoundPlayer;
+
 import java.awt.*;
 import java.awt.geom.RectangularShape;
 import java.io.Serializable;
@@ -38,6 +40,7 @@ public class FoodManager implements Serializable {
     }
 
     public void eatFood(Food food, boolean generateFood) {
+        SoundPlayer.getInstant().playSound("C");
         synchronized (this.foods) {
             foods.remove(food);
             if (generateFood) {

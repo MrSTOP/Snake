@@ -1,14 +1,15 @@
-package com.github.mrstop.soundPlay;
+package yankunwei.util;
 
 import javax.sound.sampled.*;
 import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SoundPlayer {
     private Map<String, byte[]> soundsByteArray;
     private Clip BGM;
-    private static final String path = "./src/com/github/mrstop/soundPlay/";
+    private static final String path = "/resources/sounds/";
     private static final SoundPlayer player = new SoundPlayer();
 
     public static SoundPlayer getInstant(){
@@ -17,18 +18,22 @@ public class SoundPlayer {
 
     private SoundPlayer() {
         soundsByteArray = new HashMap<>();
-        soundsByteArray.put("BGM", initAudioByteArray("Alarm01.wav"));
-        soundsByteArray.put("S2", initAudioByteArray("Alarm02.wav"));
-        soundsByteArray.put("S3", initAudioByteArray("Alarm03.wav"));
-        soundsByteArray.put("S4", initAudioByteArray("Alarm04.wav"));
-        soundsByteArray.put("S5", initAudioByteArray("Alarm05.wav"));
-        soundsByteArray.put("S6", initAudioByteArray("Alarm06.wav"));
-        soundsByteArray.put("S7", initAudioByteArray("Alarm07.wav"));
-        soundsByteArray.put("S8", initAudioByteArray("Alarm08.wav"));
-        soundsByteArray.put("S9", initAudioByteArray("Alarm09.wav"));
-        soundsByteArray.put("S10", initAudioByteArray("Alarm10.wav"));
-        soundsByteArray.put("C", initAudioByteArray("C.wav"));
+        soundsByteArray.put("BGM", initAudioByteArray(this.getURL("Alarm01.wav")));
+        soundsByteArray.put("S2", initAudioByteArray(this.getURL("Alarm02.wav")));
+        soundsByteArray.put("S3", initAudioByteArray(this.getURL("Alarm03.wav")));
+        soundsByteArray.put("S4", initAudioByteArray(this.getURL("Alarm04.wav")));
+        soundsByteArray.put("S5", initAudioByteArray(this.getURL("Alarm05.wav")));
+        soundsByteArray.put("S6", initAudioByteArray(this.getURL("Alarm06.wav")));
+        soundsByteArray.put("S7", initAudioByteArray(this.getURL("Alarm07.wav")));
+        soundsByteArray.put("S8", initAudioByteArray(this.getURL("Alarm08.wav")));
+        soundsByteArray.put("S9", initAudioByteArray(this.getURL("Alarm09.wav")));
+        soundsByteArray.put("S10", initAudioByteArray(this.getURL("Alarm10.wav")));
+        soundsByteArray.put("C", initAudioByteArray(this.getURL("C.wav")));
         BGM = getAudioClip("BGM");
+    }
+
+    private URL getURL(String fileName) {
+        return this.getClass().getResource(path + fileName);
     }
 
     public Clip getBGM() {
@@ -43,14 +48,14 @@ public class SoundPlayer {
         return false;
     }
 
-    private byte[] initAudioByteArray(String fileName) {
+    private byte[] initAudioByteArray(URL url) {
         int read;
         byte[] audio;
         byte[] buffer = new byte[1024];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         try {
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(path + fileName).getAbsoluteFile());
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(url);
             while ((read = inputStream.read(buffer)) > 0) {
                 out.write(buffer, 0, read);
             }
