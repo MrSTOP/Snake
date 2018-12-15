@@ -6,13 +6,14 @@ import java.awt.event.*;
 import java.util.Random;
 
 public class GameComponent extends JComponent {
-    private static final int DEFAULT_HEIGHT = 500;
-    private static final int DEFAULT_WIDTH = 500;
+    private static final int DEFAULT_HEIGHT = 800;
+    private static final int DEFAULT_WIDTH = 800;
     private static final int GAME_LOGIC_TICK = 200;
     private Food food= new Food(100, 100, 30, 30, 5);
     private Snake snake;
     KeyBoardControl control;
     private int currentDirection;
+    private FoodManager foodManager;
 
     public GameComponent() {
         this.control = new KeyBoardControl();
@@ -20,6 +21,7 @@ public class GameComponent extends JComponent {
         this.setBackground(Color.CYAN);
         this.addKeyListener(this.control);
         this.snake = new Snake(this.getPreferredSize());
+        this.foodManager = new FoodManager(this.getPreferredSize());
         gameLogicLoop();
     }
 
@@ -40,14 +42,21 @@ public class GameComponent extends JComponent {
     }
 
     private void doGameLogic() {
+        snake.lastBody = snake.getPosition();
         snake.move(currentDirection);
+        Food food = foodManager.canEatFood(snake.head);
+        if (food != null) {
+            System.out.println("EAT");
+            foodManager.eatFood(food);
+        }
     }
 
     @Override
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
-        graphics2D.fill(food);
+//        graphics2D.fill(food);
+        foodManager.paintFood(graphics2D);
         snake.paintSnake(graphics2D);
     }
 
