@@ -11,13 +11,13 @@ public class FoodManager {
     private static final int DEFAULT_PLUS_EDGE_WIDTH = 4;
     private final Random random;
     private Dimension frameBorder;
-    Vector<Food> foods;
+    private Vector<Food> foods;
 
     public FoodManager(Dimension frameBorder) {
         this.foods = new Vector<>();
         this.frameBorder = frameBorder;
         this.random = new Random(System.nanoTime());
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 50; i++) {
             Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
             this.foods.add(food);
         }
@@ -49,7 +49,8 @@ public class FoodManager {
     }
 
     public void paintFood(Graphics2D graphics2D) {
-        for (Food food: foods) {
+        Vector<Food> tempFood = new Vector<>(this.foods);
+        for (Food food: tempFood) {
             graphics2D.draw(food);
         }
     }

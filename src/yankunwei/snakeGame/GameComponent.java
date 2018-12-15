@@ -8,7 +8,7 @@ import java.util.Random;
 public class GameComponent extends JComponent {
     private static final int DEFAULT_HEIGHT = 800;
     private static final int DEFAULT_WIDTH = 800;
-    private static final int GAME_LOGIC_TICK = 200;
+    private static final int GAME_LOGIC_TICK = 100;//20
     private Food food= new Food(100, 100, 30, 30, 5);
     private Snake snake;
     KeyBoardControl control;
