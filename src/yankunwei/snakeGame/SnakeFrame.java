@@ -1,21 +1,15 @@
 package yankunwei.snakeGame;
 
-import yankunwei.util.MouseComponent;
-
 import javax.swing.*;
-import java.util.Vector;
 
 public class SnakeFrame extends JFrame {
-    private Vector<Food> foods;
-    private GamePanel gamePanel;
+    private GameComponent gameComponent;
 
     public SnakeFrame() {
-        foods = new Vector<>();
-        gamePanel = new GamePanel();
-//        MouseComponent mouseComponent = new MouseComponent();
-//        this.add(mouseComponent);
-        this.add(gamePanel);
+        gameComponent = new GameComponent();
+        this.add(gameComponent);
         this.pack();
+        System.out.println("INIT");
 //        this.setSize(1920, 1080);
     }
 }
