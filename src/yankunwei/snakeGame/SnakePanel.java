@@ -46,9 +46,19 @@ public class SnakePanel extends JPanel {
     }
 
     public void startGame() {
-        this.gameComponent.requestFocusInWindow();
         this.changeComponent(GAME_COMPONENT);
+        this.gameComponent.requestFocusInWindow();
         this.gameComponent.startGame();
+    }
+
+    public void continueGame() {
+        this.changeComponent(GAME_COMPONENT);
+        this.gameComponent.requestFocusInWindow();
+        this.gameComponent.continueGame();
+    }
+
+    public void returnMainInterface() {
+        this.changeComponent(MAIN_INTERFACE);
     }
 
     private void changeComponent(int ID) {
