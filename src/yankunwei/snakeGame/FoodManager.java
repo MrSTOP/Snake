@@ -33,7 +33,19 @@ public class FoodManager {
     }
 
     public void eatFood(Food food) {
+        this.eatFood(food, true);
+    }
+
+    public void eatFood(Food food, boolean generateFood) {
         foods.remove(food);
+        if (generateFood) {
+            this.generateFood();
+        }
+    }
+
+    public void generateFood() {
+        Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
+        foods.add(food);
     }
 
     public void paintFood(Graphics2D graphics2D) {
