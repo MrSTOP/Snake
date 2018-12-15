@@ -17,7 +17,7 @@ public class FoodManager {
         this.foods = new Vector<>();
         this.frameBorder = frameBorder;
         this.random = new Random(System.nanoTime());
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
             this.foods.add(food);
         }
@@ -37,20 +37,24 @@ public class FoodManager {
     }
 
     public void eatFood(Food food, boolean generateFood) {
-        foods.remove(food);
-        if (generateFood) {
-            this.generateFood();
+        synchronized (this.foods) {
+            foods.remove(food);
+            if (generateFood) {
+                this.generateFood();
+            }
         }
     }
 
     public void generateFood() {
         Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
-        foods.add(food);
+            foods.add(food);
     }
 
     public void paintFood(Graphics2D graphics2D) {
-        for (Food food: foods) {
-            graphics2D.draw(food);
+        synchronized (this.foods) {
+            for (Food food: foods) {
+                graphics2D.draw(food);
+            }
         }
     }
 }

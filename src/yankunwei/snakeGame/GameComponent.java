@@ -9,7 +9,6 @@ public class GameComponent extends JComponent {
     private static final int DEFAULT_WIDTH = 800;
     private static final int GAME_LOGIC_TICK = 100;//20
     private static final int GAME_RENDER_TICK = 10;
-    private Food food= new Food(100, 100, 30, 30, 5);
     private Snake snake;
     KeyBoardControl control;
     private int currentDirection;
@@ -51,7 +50,6 @@ public class GameComponent extends JComponent {
     }
 
     private void doGameLogic() {
-        snake.lastBody = snake.getPosition();
         snake.move(currentDirection);
         Food food = foodManager.canEatFood(snake.head);
         if (food != null) {
@@ -82,21 +80,25 @@ public class GameComponent extends JComponent {
         @Override
         public void keyPressed(KeyEvent event) {
             switch (event.getKeyCode()) {
+                case KeyEvent.VK_UP:
                 case KeyEvent.VK_W:
                     if (snake.directionConflict(Snake.DIRECTION_UP)) {
                         currentDirection = Snake.DIRECTION_UP;
                     }
                     break;
+                case KeyEvent.VK_DOWN:
                 case KeyEvent.VK_S:
                     if (snake.directionConflict(Snake.DIRECTION_DOWN)) {
                         currentDirection = Snake.DIRECTION_DOWN;
                     }
                     break;
+                case KeyEvent.VK_LEFT:
                 case KeyEvent.VK_A:
                     if (snake.directionConflict(Snake.DIRECTION_LEFT)) {
                        currentDirection = Snake.DIRECTION_LEFT;
                     }
                     break;
+                case KeyEvent.VK_RIGHT:
                 case KeyEvent.VK_D:
                     if (snake.directionConflict(Snake.DIRECTION_RIGHT)) {
                         currentDirection = Snake.DIRECTION_RIGHT;

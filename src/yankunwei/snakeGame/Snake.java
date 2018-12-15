@@ -17,7 +17,7 @@ public class Snake {
     private static final int STEPS = 10;
 
     private Vector<RectangularShape> body;
-    public Vector<Point2D> lastBody;
+    public Vector<RectangularShape> lastBody;
     private int direction;
     public final RectangularShape head;
     private Dimension frameBorder;
@@ -37,10 +37,12 @@ public class Snake {
         }
         this.direction = DIRECTION_DOWN;
         this.frameBorder = border;
-        this.lastBody = this.getPosition();
+        this.lastBody = new Vector<>();
     }
 
     public void move(int direction) {
+        this.lastBody.removeAllElements();
+        this.lastBody.addAll(body);
         if (!judgeBorder(this.frameBorder)) {
             this.direction = direction;
             moveSnakeToDirection();
@@ -63,7 +65,9 @@ public class Snake {
     public void grow() {
         RectangularShape tail = body.lastElement();
         Rectangle2D.Double rect = new Rectangle2D.Double(tail.getX(), tail.getY(), tail.getWidth(), tail.getHeight());
-        body.add(rect);
+        synchronized (this.body) {
+            body.add(rect);
+        }
     }
 
     public boolean conflictToSelf() {
@@ -133,21 +137,23 @@ public class Snake {
         return true;
     }
 
-    public Vector<Point2D> getPosition() {
-        Vector<Point2D> pos = new Vector<>();
-        Point2D.Double point2D;
-        for (RectangularShape shape: body) {
-            point2D = new Point2D.Double();
-            point2D.x = shape.getX();
-            point2D.y = shape.getY();
-            pos.add(point2D);
+    public void paintSnake(Graphics2D graphics2D) {
+//        for (int i = 0; i < body.size(); ++i) {
+//            RectangularShape lastPos = lastBody.get(i);
+//            RectangularShape pos = body.get(i);
+//            if (lastPos != null) {
+//                smoothPoint.x -= point.x;
+//                smoothPoint.y -= point.y;
+//            }
+//        }
+        synchronized (this.body) {
+            for (RectangularShape shape: body) {
+                graphics2D.draw(shape);
+            }
         }
-        return pos;
     }
 
-    public void paintSnake(Graphics2D graphics2D) {
-        for (RectangularShape shape: body) {
-            graphics2D.draw(shape);
-        }
+    public void setFrameBorder(Dimension frameBorder) {
+        this.frameBorder = frameBorder;
     }
 }
