@@ -67,6 +67,18 @@ public class Snake {
         body.add(rect);
     }
 
+    public boolean conflictToSelf() {
+        for (RectangularShape shape: body) {
+            if (shape instanceof RoundRectangle2D.Double) {
+                continue;
+            }
+            if (shape.intersects(head.getFrame())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void moveSnakeToDirection(){
         Rectangle2D.Double currentFrame = null;
         for (int i = 0; i < body.size(); ++i) {

@@ -60,6 +60,9 @@ public class GameComponent extends JComponent {
             foodManager.eatFood(food);
             snake.grow();
         }
+        if (snake.conflictToSelf()) {
+            System.out.println("CONFLICT");
+        }
     }
 
     @Override
