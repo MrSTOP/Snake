@@ -48,6 +48,7 @@ public class GameComponent extends JComponent {
         if (food != null) {
             System.out.println("EAT");
             foodManager.eatFood(food);
+            snake.grow();
         }
     }
 

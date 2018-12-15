@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
+import java.security.interfaces.RSAKey;
 import java.util.Vector;
 
 public class Snake {
@@ -58,6 +59,12 @@ public class Snake {
         }
         body.get(0).setFrame(headFrame);
         moveSnakeToDirection();
+    }
+
+    public void grow() {
+        RectangularShape tail = body.lastElement();
+        Rectangle2D.Double rect = new Rectangle2D.Double(tail.getX(), tail.getY(), tail.getWidth(), tail.getHeight());
+        body.add(rect);
     }
 
     private void moveSnakeToDirection(){
