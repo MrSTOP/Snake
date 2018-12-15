@@ -5,8 +5,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
-public class Food implements Shape {
+public class Food implements Shape, Serializable {
     public double x;
     public double y;
     public double width;

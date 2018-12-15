@@ -2,10 +2,11 @@ package yankunwei.snakeGame;
 
 import java.awt.*;
 import java.awt.geom.RectangularShape;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
 
-public class FoodManager {
+public class FoodManager implements Serializable {
     private static final int DEFAULT_FOOD_WIDTH = 10;
     private static final int DEFAULT_FOOD_HEIGHT = 10;
     private static final int DEFAULT_PLUS_EDGE_WIDTH = 4;
@@ -17,7 +18,7 @@ public class FoodManager {
         this.foods = new Vector<>();
         this.frameBorder = frameBorder;
         this.random = new Random(System.nanoTime());
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1; i++) {
             Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
             this.foods.add(food);
         }

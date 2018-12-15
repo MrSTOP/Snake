@@ -5,9 +5,10 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Snake {
+public class Snake implements Serializable {
 
     public static final int DIRECTION_UP = 0;
     public static final int DIRECTION_DOWN = 1;
