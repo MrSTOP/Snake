@@ -1,4 +1,7 @@
 package yankunwei.snakeGame;
 
-public class LookAndFeelDialog {
+import javax.swing.*;
+
+public class LookAndFeelDialog extends JDialog {
+    
 }
