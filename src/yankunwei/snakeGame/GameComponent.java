@@ -9,12 +9,15 @@ public class GameComponent extends JComponent {
     private static final int DEFAULT_WIDTH = 800;
     private static final int GAME_LOGIC_TICK = 100;//20
     private static final int GAME_RENDER_TICK = 10;
+
+    private SnakePanel parent;
     private Snake snake;
     KeyBoardControl control;
     private int currentDirection;
     private FoodManager foodManager;
 
-    public GameComponent() {
+    public GameComponent(SnakePanel parent) {
+        this.parent = parent;
         this.control = new KeyBoardControl();
         this.setFocusable(true);
         this.setBackground(Color.CYAN);

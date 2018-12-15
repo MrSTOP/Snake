@@ -1,10 +1,9 @@
 package yankunwei.snakeGame;
 
-import yankunwei.util.LookAndFeelHelper;
-
 import javax.swing.*;
 
 public class MainInterface extends JPanel {
+    private SnakePanel parent;
     private JButton startGameButton;
     private JButton continueGameButton;
     private JButton exitGameButton;
@@ -12,7 +11,8 @@ public class MainInterface extends JPanel {
     private JButton aboutGameButton;
     private JButton lookAndFeelButton;
 
-    public MainInterface() {
+    public MainInterface(SnakePanel parent) {
+        this.parent = parent;
         this.startGameButton = new JButton("开始游戏");
         this.continueGameButton = new JButton("继续游戏");
         this.exitGameButton = new JButton("退出游戏");
@@ -20,8 +20,12 @@ public class MainInterface extends JPanel {
         this.aboutGameButton = new JButton("关于");
         this.lookAndFeelButton = new JButton("观感设置");
 
+        this.startGameButton.addActionListener(event -> {
+            this.parent.startGame();
+        });
+
         this.lookAndFeelButton.addActionListener(event -> {
-            JOptionPane.showOptionDialog(this, "选择观感", "观感", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, LookAndFeelHelper.getLookAndFeelButtonArray(this), JOptionPane.OK_OPTION);
+            new LookAndFeelDialog(parent.getParentFrame()).setVisible(true);
         });
 
         this.add(startGameButton);
