@@ -13,7 +13,7 @@ public class Snake {
     public static final int DIRECTION_LEFT = 2;
     public static final int DIRECTION_RIGHT = 3;
 
-    private static final int STEPS = 1;
+    private static final int STEPS = 10;
 
     private Vector<RectangularShape> body;
     private int direction;
@@ -45,7 +45,20 @@ public class Snake {
         if (!judgeBorder(this.frameBorder)) {
             this.direction = direction;
             moveSnakeToDirection();
+            return;
         }
+        Rectangle2D.Double headFrame = (Rectangle2D.Double) head.getFrame();
+        if (this.direction == DIRECTION_UP) {
+            headFrame.y = frameBorder.height;
+        } else if (this.direction == DIRECTION_DOWN) {
+            headFrame.y = 0;
+        } else if (this.direction == DIRECTION_LEFT) {
+            headFrame.x = frameBorder.width;
+        } else if (this.direction == DIRECTION_RIGHT) {
+            headFrame.x = 0;
+        }
+        body.get(0).setFrame(headFrame);
+        moveSnakeToDirection();
     }
 
     private void moveSnakeToDirection(){
@@ -78,61 +91,9 @@ public class Snake {
             }
         }
     }
-//
-//    private void moveSnakeUp() {
-//        Rectangle2D.Double currentFrame = null;
-//        for (int i = 0; i < body.size(); ++i) {
-//            RectangularShape shape = body.get(i);
-//            if (i == 0) {
-//                currentFrame = (Rectangle2D.Double) shape.getFrame();
-//                Rectangle2D.Double frame = (Rectangle2D.Double) shape.getFrame();
-//                frame.y -=10;
-//                shape.setFrame(frame);
-//            } else {
-//                Rectangle2D.Double temp = (Rectangle2D.Double) shape.getFrame();
-//                moveSnakeBodyShape(currentFrame, shape);
-//                currentFrame = temp;
-//            }
-//        }
-//    }
-//
-//    private void moveSnakeDown() {
-//        Rectangle2D.Double currentFrame = null;
-//        for (int i = 0; i < body.size(); ++i) {
-//            RectangularShape shape = body.get(i);
-//            if (i == 0) {
-//                currentFrame = (Rectangle2D.Double) shape.getFrame();
-//                Rectangle2D.Double frame = (Rectangle2D.Double) shape.getFrame();
-//                frame.y +=10;
-//                shape.setFrame(frame);
-//            } else {
-//                Rectangle2D.Double temp = (Rectangle2D.Double) shape.getFrame();
-//                moveSnakeBodyShape(currentFrame, shape);
-//                currentFrame = temp;
-//            }
-//        }
-//    }
-//
-//    private void moveSnakeLeft() {
-//        Rectangle2D.Double currentFrame = null;
-//        for (int i = 0; i < body.size(); ++i) {
-//            RectangularShape shape = body.get(i);
-//            if (i == 0) {
-//                currentFrame = (Rectangle2D.Double) shape.getFrame();
-//                Rectangle2D.Double frame = (Rectangle2D.Double) shape.getFrame();
-//                frame.x -=10;
-//                shape.setFrame(frame);
-//            } else {
-//                Rectangle2D.Double temp = (Rectangle2D.Double) shape.getFrame();
-//                moveSnakeBodyShape(currentFrame, shape);
-//                currentFrame = temp;
-//            }
-//        }
-//    }
-
 
     public boolean judgeBorder(Dimension dimension) {
-        if (this.head.getY() >= dimension.height || this.head.getY() <= 10 || this.head.getX() >= dimension.width || this.head.getX() <= 10) {
+        if (this.head.getY() >= dimension.height || this.head.getY() <= 0 || this.head.getX() >= dimension.width || this.head.getX() <= 0) {
             return true;
         } else {
             return false;
