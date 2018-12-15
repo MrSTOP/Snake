@@ -1,5 +1,6 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.dialog.AboutDialog;
 import yankunwei.snakeGame.dialog.LookAndFeelDialog;
 
 import javax.swing.*;
@@ -25,9 +26,14 @@ public class MainInterface extends JPanel {
         this.startGameButton.addActionListener(event -> {
             this.parent.startGame();
         });
-
+        this.continueGameButton.addActionListener(event -> {
+            this.parent.continueGame();
+        });
         this.lookAndFeelButton.addActionListener(event -> {
             new LookAndFeelDialog(parent.getParentFrame()).setVisible(true);
+        });
+        this.aboutGameButton.addActionListener(event -> {
+            new AboutDialog(parent.getParentFrame()).setVisible(true);
         });
 
         this.add(startGameButton);

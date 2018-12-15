@@ -3,6 +3,7 @@ package yankunwei.snakeGame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 
 public class GameComponent extends JComponent {
     private static final int DEFAULT_HEIGHT = 800;
@@ -15,6 +16,8 @@ public class GameComponent extends JComponent {
     KeyBoardControl control;
     private int currentDirection;
     private FoodManager foodManager;
+    private Thread logicThread;
+    private Thread renderThread;
 
     public GameComponent(SnakePanel parent) {
         this.parent = parent;
@@ -30,26 +33,45 @@ public class GameComponent extends JComponent {
         Runnable logic = () -> {
             long start = System.currentTimeMillis();
             long end;
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 end = System.currentTimeMillis();
                 if (end - start >= GAME_LOGIC_TICK) {
                     start = System.currentTimeMillis();
                     doGameLogic();
                 }
             }
+            System.out.println("LOGIC THREAD INTERRUPTED");
         };
-        new Thread(logic).start();
         Runnable render = () -> {
             long start = System.currentTimeMillis();
             long end;
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 end = System.currentTimeMillis();
                 if (end - start >= GAME_RENDER_TICK) {
                     repaint();
                 }
             }
+            System.out.println("RENDER THREAD INTERRUPTED");
         };
-        new Thread(render).start();
+        this.logicThread = new Thread(logic);
+        this.logicThread.setName("Logic Thread");
+        this.renderThread = new Thread(render);
+        this.renderThread.setName("Render Thread");
+        this.logicThread.start();
+        this.renderThread.start();
+    }
+
+    public void stopGame() {
+        this.saveGame();
+        this.logicThread.interrupt();
+        this.renderThread.interrupt();
+        System.out.println("STOP");
+        parent.returnMainInterface();
+    }
+
+    public void continueGame() {
+        this.loadGame();
+        this.startGame();
     }
 
     private void doGameLogic() {
@@ -62,6 +84,39 @@ public class GameComponent extends JComponent {
         }
         if (snake.conflictToSelf()) {
             System.out.println("CONFLICT");
+        }
+    }
+
+    private void loadGame() {
+        try (FileInputStream fileInputStream = new FileInputStream("GameData.dat");
+             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+            this.snake = (Snake) objectInputStream.readObject();
+            this.foodManager = (FoodManager) objectInputStream.readObject();
+            this.currentDirection = objectInputStream.readInt();
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(this.parent, "文件不存在", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this.parent, "文件读取失败", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(this.parent, "类不存在，这个错误不该发生。", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    private void saveGame() {
+        try (FileOutputStream fileOutputStream = new FileOutputStream("GameData.dat");
+             ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
+            objectOutputStream.writeObject(this.snake);
+            objectOutputStream.writeObject(this.foodManager);
+            objectOutputStream.writeInt(this.currentDirection);
+        } catch (FileNotFoundException e) {
+            JOptionPane.showMessageDialog(this.parent, "文件不存在", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this.parent, "文件写入失败", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
@@ -106,6 +161,9 @@ public class GameComponent extends JComponent {
                     if (snake.directionConflict(Snake.DIRECTION_RIGHT)) {
                         currentDirection = Snake.DIRECTION_RIGHT;
                     }
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    stopGame();
                     break;
             }
         }
