@@ -1,6 +1,7 @@
 package yankunwei.snakeGame;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
@@ -16,8 +17,9 @@ public class Snake {
     private static final int STEPS = 10;
 
     private Vector<RectangularShape> body;
+    public Vector<Point2D> lastBody;
     private int direction;
-    public RectangularShape head;
+    public final RectangularShape head;
     private Dimension frameBorder;
 
     Snake(Dimension border) {
@@ -25,12 +27,6 @@ public class Snake {
     }
 
     Snake(int initLength, int headX, int headY, Dimension border) {
-        initSnakeBody(initLength, headX, headY);
-        this.direction = DIRECTION_DOWN;
-        this.frameBorder = border;
-    }
-
-    private void initSnakeBody(int initLength, int headX, int headY) {
         body = new Vector<>();
         RoundRectangle2D arc = new RoundRectangle2D.Double(headX, headY, 10, 10, 10, 500);
         this.head = arc;
@@ -39,6 +35,9 @@ public class Snake {
             Rectangle2D rect = new Rectangle2D.Double(headX + 10 * i, headY, 10, 10);
             body.add(rect);
         }
+        this.direction = DIRECTION_DOWN;
+        this.frameBorder = border;
+        this.lastBody = this.getPosition();
     }
 
     public void move(int direction) {
@@ -116,8 +115,21 @@ public class Snake {
         return false;
     }
 
+    public Vector<Point2D> getPosition() {
+        Vector<Point2D> pos = new Vector<>();
+        Point2D.Double point2D;
+        for (RectangularShape shape: body) {
+            point2D = new Point2D.Double();
+            point2D.x = shape.getX();
+            point2D.y = shape.getY();
+            pos.add(point2D);
+        }
+        return pos;
+    }
+
     public void paintSnake(Graphics2D graphics2D) {
-        for (Shape shape: body) {
+
+        for (RectangularShape shape: body) {
             graphics2D.draw(shape);
         }
     }
