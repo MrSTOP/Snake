@@ -3,7 +3,6 @@ package yankunwei.snakeGame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Random;
 
 public class GameComponent extends JComponent {
     private static final int DEFAULT_HEIGHT = 800;
@@ -22,11 +21,11 @@ public class GameComponent extends JComponent {
         this.addKeyListener(this.control);
         this.snake = new Snake(this.getPreferredSize());
         this.foodManager = new FoodManager(this.getPreferredSize());
-        gameLogicLoop();
+        startGame();
     }
 
-    private void gameLogicLoop() {
-        Runnable runnable = () -> {
+    private void startGame() {
+        Runnable logic = () -> {
             long start = System.currentTimeMillis();
             long end;
             while (true) {
@@ -35,10 +34,15 @@ public class GameComponent extends JComponent {
                     start = System.currentTimeMillis();
                     doGameLogic();
                 }
+            }
+        };
+        new Thread(logic).start();
+        Runnable render = () -> {
+            while (true) {
                 repaint();
             }
         };
-        new Thread(runnable).start();
+        new Thread(render).start();
     }
 
     private void doGameLogic() {

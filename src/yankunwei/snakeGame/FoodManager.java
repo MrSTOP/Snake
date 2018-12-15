@@ -49,8 +49,7 @@ public class FoodManager {
     }
 
     public void paintFood(Graphics2D graphics2D) {
-        Vector<Food> tempFood = new Vector<>(this.foods);
-        for (Food food: tempFood) {
+        for (Food food: foods) {
             graphics2D.draw(food);
         }
     }
