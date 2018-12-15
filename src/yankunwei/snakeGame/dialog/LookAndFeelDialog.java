@@ -1,4 +1,4 @@
-package yankunwei.snakeGame;
+package yankunwei.snakeGame.dialog;
 
 import yankunwei.util.LookAndFeelHelper;
 

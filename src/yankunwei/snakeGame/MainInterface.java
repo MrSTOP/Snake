@@ -1,5 +1,7 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.dialog.LookAndFeelDialog;
+
 import javax.swing.*;
 
 public class MainInterface extends JPanel {
