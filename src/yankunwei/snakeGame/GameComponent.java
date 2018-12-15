@@ -22,10 +22,9 @@ public class GameComponent extends JComponent {
         this.addKeyListener(this.control);
         this.snake = new Snake(this.getPreferredSize());
         this.foodManager = new FoodManager(this.getPreferredSize());
-        startGame();
     }
 
-    private void startGame() {
+    public void startGame() {
         Runnable logic = () -> {
             long start = System.currentTimeMillis();
             long end;
@@ -84,22 +83,22 @@ public class GameComponent extends JComponent {
         public void keyPressed(KeyEvent event) {
             switch (event.getKeyCode()) {
                 case KeyEvent.VK_W:
-                    if (!snake.directionConflict(Snake.DIRECTION_UP)) {
+                    if (snake.directionConflict(Snake.DIRECTION_UP)) {
                         currentDirection = Snake.DIRECTION_UP;
                     }
                     break;
                 case KeyEvent.VK_S:
-                    if (!snake.directionConflict(Snake.DIRECTION_DOWN)) {
+                    if (snake.directionConflict(Snake.DIRECTION_DOWN)) {
                         currentDirection = Snake.DIRECTION_DOWN;
                     }
                     break;
                 case KeyEvent.VK_A:
-                    if (!snake.directionConflict(Snake.DIRECTION_LEFT)) {
+                    if (snake.directionConflict(Snake.DIRECTION_LEFT)) {
                        currentDirection = Snake.DIRECTION_LEFT;
                     }
                     break;
                 case KeyEvent.VK_D:
-                    if (!snake.directionConflict(Snake.DIRECTION_RIGHT)) {
+                    if (snake.directionConflict(Snake.DIRECTION_RIGHT)) {
                         currentDirection = Snake.DIRECTION_RIGHT;
                     }
                     break;

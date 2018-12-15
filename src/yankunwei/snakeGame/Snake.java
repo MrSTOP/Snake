@@ -5,7 +5,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.awt.geom.RoundRectangle2D;
-import java.security.interfaces.RSAKey;
 import java.util.Vector;
 
 public class Snake {
@@ -111,7 +110,7 @@ public class Snake {
     }
 
     public boolean judgeBorder(Dimension dimension) {
-        if (this.head.getY() >= dimension.height || this.head.getY() <= 0 || this.head.getX() >= dimension.width || this.head.getX() <= 0) {
+        if (this.head.getY() >= dimension.height || this.head.getY() <= -10 || this.head.getX() >= dimension.width || this.head.getX() <= -10) {
             return true;
         } else {
             return false;
@@ -120,18 +119,18 @@ public class Snake {
 
     public boolean directionConflict(int direction) {
         if (this.direction == DIRECTION_UP && direction == DIRECTION_DOWN) {
-            return true;
+            return false;
         }
         if (this.direction == DIRECTION_DOWN && direction == DIRECTION_UP) {
-            return true;
+            return false;
         }
         if (this.direction == DIRECTION_LEFT && direction == DIRECTION_RIGHT) {
-            return true;
+            return false;
         }
         if (this.direction == DIRECTION_RIGHT && direction == DIRECTION_LEFT) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public Vector<Point2D> getPosition() {
@@ -147,7 +146,6 @@ public class Snake {
     }
 
     public void paintSnake(Graphics2D graphics2D) {
-
         for (RectangularShape shape: body) {
             graphics2D.draw(shape);
         }
