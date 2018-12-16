@@ -6,19 +6,55 @@ import java.awt.event.*;
 import java.io.*;
 
 public class GameComponent extends JComponent {
+    /**
+     * 默认高度
+     */
     private static final int DEFAULT_HEIGHT = 800;
+    /**
+     * 默认宽度
+     */
     private static final int DEFAULT_WIDTH = 800;
+    /**
+     * 游戏逻辑帧时长
+     */
     private static final int GAME_LOGIC_TICK = 100;//20
+    /**
+     * 游戏绘制帧时长
+     */
     private static final int GAME_RENDER_TICK = 10;
 
+    /**
+     * 父面板（用于显示对话框）
+     */
     private SnakePanel parent;
+    /**
+     * 蛇
+     */
     private Snake snake;
+    /**
+     * 键盘控制
+     */
     KeyBoardControl control;
+    /**
+     * 当前蛇的方向
+     */
     private int currentDirection;
+    /**
+     * 食物管理器
+     */
     private FoodManager foodManager;
+    /**
+     * 逻辑线程
+     */
     private Thread logicThread;
+    /**
+     * 绘制线程
+     */
     private Thread renderThread;
 
+    /**
+     * @param parent 父面板
+     */
     public GameComponent(SnakePanel parent) {
         this.parent = parent;
         this.control = new KeyBoardControl();
@@ -29,6 +65,9 @@ public class GameComponent extends JComponent {
         this.foodManager = new FoodManager(this.getPreferredSize());
     }
 
+    /**
+     * 开始游戏
+     */
     public void startGame() {
         Runnable logic = () -> {
             long start = System.currentTimeMillis();
@@ -61,6 +100,9 @@ public class GameComponent extends JComponent {
         this.renderThread.start();
     }
 
+    /**
+     * 停止游戏
+     */
     public void stopGame() {
         this.saveGame();
         this.logicThread.interrupt();
@@ -69,11 +111,17 @@ public class GameComponent extends JComponent {
         parent.returnMainInterface();
     }
 
+    /**
+     * 继续游戏
+     */
     public void continueGame() {
         this.loadGame();
         this.startGame();
     }
 
+    /**
+     * 执行游戏逻辑
+     */
     private void doGameLogic() {
         snake.move(currentDirection);
         Food food = foodManager.canEatFood(snake.head);
@@ -87,6 +135,9 @@ public class GameComponent extends JComponent {
         }
     }
 
+    /**
+     * 加载游戏
+     */
     private void loadGame() {
         try (FileInputStream fileInputStream = new FileInputStream("GameData.dat");
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
@@ -105,6 +156,9 @@ public class GameComponent extends JComponent {
         }
     }
 
+    /**
+     * 保存游戏
+     */
     private void saveGame() {
         try (FileOutputStream fileOutputStream = new FileOutputStream("GameData.dat");
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
@@ -120,6 +174,10 @@ public class GameComponent extends JComponent {
         }
     }
 
+    /**
+     * 绘制所有组件
+     * @param graphics 用于绘制Graphics
+     */
     @Override
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
@@ -129,11 +187,18 @@ public class GameComponent extends JComponent {
         snake.paintSnake(graphics2D);
     }
 
+    /**
+     * 获取组件大小
+     * @return 代表组件大小的Dimension
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
+    /**
+     * 键盘控制
+     */
     public class KeyBoardControl extends KeyAdapter {
         @Override
         public void keyPressed(KeyEvent event) {

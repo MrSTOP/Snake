@@ -3,6 +3,9 @@ package yankunwei.snakeGame;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 贪吃蛇主类
+ */
 public class SnakeGame {
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {

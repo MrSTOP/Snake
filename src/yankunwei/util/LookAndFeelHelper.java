@@ -17,6 +17,10 @@ public class LookAndFeelHelper {
         return lookAndFeelPanel;
     }
 
+    /**
+     * 将组件的观感设置为Windows观感
+     * @param component 要设置观感的组件
+     */
     public static void setWindowsLookAndFeel(Component component){
         setLookAndFeel(component, "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
     }
@@ -37,6 +41,11 @@ public class LookAndFeelHelper {
         setLookAndFeel(component, "com.sun.java.swing.plaf.motif.MotifLookAndFeel");
     }
 
+    /**
+     * 根据观感类名设置组件观感
+     * @param component 要设置观感的组件
+     * @param className 要设置的观感类名
+     */
     private static void setLookAndFeel(Component component, String className){
         try {
             UIManager.setLookAndFeel(className);
