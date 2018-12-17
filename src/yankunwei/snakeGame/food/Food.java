@@ -11,6 +11,8 @@ import java.io.Serializable;
  * 食物
  */
 public abstract class Food implements Shape, Serializable {
+    protected static final int DEFAULT_HEIGHT = 10;
+    protected static final int DEFAULT_WIDTH = 10;
     /**
      * 食物x坐标
      */
@@ -27,6 +29,21 @@ public abstract class Food implements Shape, Serializable {
      * 食物高度
      */
     public double height;
+
+    protected Food(Point2D point2D) {
+        this(point2D.getX(), point2D.getY());
+    }
+
+    protected Food(double x, double y) {
+        this(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
+
+    protected Food(double x, double y, double width, double height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
     /**
      * 获取食物的x坐标
@@ -74,6 +91,42 @@ public abstract class Food implements Shape, Serializable {
      */
     public double getCenterY() {
         return this.getY() + this.getHeight() / 2;
+    }
+
+    /**
+     * 获取食物的最小x坐标
+     *
+     * @return 食物的最小x坐标
+     */
+    public double getMinX() {
+        return this.x;
+    }
+
+    /**
+     * 获取食物的最小y坐标
+     *
+     * @return 食物的最小y坐标
+     */
+    public double getMinY() {
+        return this.y;
+    }
+
+    /**
+     * 获取食物的最大x坐标
+     *
+     * @return 食物的最大x坐标
+     */
+    public double getMaxX() {
+        return this.x + this.width;
+    }
+
+    /**
+     * 获取食物的最大y坐标
+     *
+     * @return 获取食物的最大y坐标
+     */
+    public double getMaxY() {
+        return this.y + this.height;
     }
 
     /**
