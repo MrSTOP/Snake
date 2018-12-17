@@ -1,10 +1,13 @@
 package yankunwei.snakeGame;
 
 import yankunwei.snakeGame.food.Food;
+import yankunwei.snakeGame.food.Heart;
+import yankunwei.snakeGame.food.Plus;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Path2D;
 import java.io.*;
 
 public class GameComponent extends JComponent {
@@ -189,10 +192,11 @@ public class GameComponent extends JComponent {
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
-//        graphics2D.fill(food);
+        graphics2D.draw(new Plus(100, 100, 100, 100, 20));
         foodManager.paintFood(graphics2D);
         snake.paintSnake(graphics2D);
         graphics2D.drawString(String.valueOf(snake.getScore()), 10, 10);
+
     }
 
     /**

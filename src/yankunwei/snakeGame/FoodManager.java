@@ -1,10 +1,12 @@
 package yankunwei.snakeGame;
 
 import yankunwei.snakeGame.food.Food;
+import yankunwei.snakeGame.food.Heart;
 import yankunwei.snakeGame.food.Plus;
 import yankunwei.util.SoundPlayer;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.RectangularShape;
 import java.io.Serializable;
 import java.util.Random;
@@ -14,9 +16,6 @@ import java.util.Vector;
  * 食物管理器
  */
 public class FoodManager implements Serializable {
-    private static final int DEFAULT_FOOD_WIDTH = 10;
-    private static final int DEFAULT_FOOD_HEIGHT = 10;
-    private static final int DEFAULT_PLUS_EDGE_WIDTH = 4;
     /**
      * 随机数生成器，用于生成食物坐标
      */
@@ -38,7 +37,7 @@ public class FoodManager implements Serializable {
         this.frameBorder = frameBorder;
         this.random = new Random(System.nanoTime());
         for (int i = 0; i < 1; i++) {
-            Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
+            Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height));
             this.foods.add(food);
         }
     }
@@ -84,8 +83,19 @@ public class FoodManager implements Serializable {
      * 生成新的食物
      */
     public void generateFood() {
-        Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
-            foods.add(food);
+        Food food;
+        if (random.nextInt(100) >= 90) {
+            food = new Heart(generateFoodPosition());
+        } else {
+            food = new Plus(generateFoodPosition());
+        }
+        foods.add(food);
+    }
+
+    private Point2D generateFoodPosition() {
+        double x = random.nextInt(frameBorder.width);
+        double y = random.nextInt(frameBorder.height);
+        return new Point2D.Double(x, y);
     }
 
     /**
