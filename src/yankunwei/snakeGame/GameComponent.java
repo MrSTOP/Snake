@@ -57,12 +57,12 @@ public class GameComponent extends JComponent {
      */
     public GameComponent(SnakePanel parent) {
         this.parent = parent;
+        this.snake = new Snake(this.getPreferredSize());
+        this.foodManager = new FoodManager(this.getPreferredSize());
         this.control = new KeyBoardControl();
         this.setFocusable(true);
         this.setBackground(Color.CYAN);
         this.addKeyListener(this.control);
-        this.snake = new Snake(this.getPreferredSize());
-        this.foodManager = new FoodManager(this.getPreferredSize());
     }
 
     /**
@@ -119,6 +119,10 @@ public class GameComponent extends JComponent {
         this.startGame();
     }
 
+    public void gameOver() {
+
+    }
+
     /**
      * 执行游戏逻辑
      */
@@ -132,6 +136,7 @@ public class GameComponent extends JComponent {
         }
         if (snake.conflictToSelf()) {
             System.out.println("CONFLICT");
+            this.gameOver();
         }
     }
 
@@ -185,6 +190,7 @@ public class GameComponent extends JComponent {
 //        graphics2D.fill(food);
         foodManager.paintFood(graphics2D);
         snake.paintSnake(graphics2D);
+        graphics2D.drawString(String.valueOf(snake.getScore()), 10, 10);
     }
 
     /**

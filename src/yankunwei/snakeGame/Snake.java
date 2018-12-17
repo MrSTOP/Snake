@@ -132,6 +132,14 @@ public class Snake implements Serializable {
     }
 
     /**
+     * 获取蛇的当前分数
+     * @return 当前分数
+     */
+    public int getScore() {
+        return this.score;
+    }
+
+    /**
      * 判断是否碰到自己
      * @return 如果碰到自己返回true，否则返回false
      */
