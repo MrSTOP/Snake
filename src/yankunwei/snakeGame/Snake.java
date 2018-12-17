@@ -45,6 +45,10 @@ public class Snake implements Serializable {
      */
     private int direction;
     /**
+     * 得分
+     */
+    private int score;
+    /**
      * 蛇头
      */
     public final RectangularShape head;
@@ -78,6 +82,7 @@ public class Snake implements Serializable {
         this.direction = DIRECTION_DOWN;
         this.frameBorder = border;
         this.lastBody = new Vector<>();
+        this.score = 0;
     }
 
     /**
@@ -107,14 +112,23 @@ public class Snake implements Serializable {
     }
 
     /**
-     * 使蛇身增长
+     * 使蛇身增长并增加指定的分数
+     * @param score 要增加的分数
      */
-    public void grow() {
+    public void grow(int score) {
+        this.score += score;
         RectangularShape tail = body.lastElement();
         Rectangle2D.Double rect = new Rectangle2D.Double(tail.getX(), tail.getY(), tail.getWidth(), tail.getHeight());
         synchronized (this.body) {
             body.add(rect);
         }
+    }
+
+    /**
+     * 使蛇身增长并增加默认的分数
+     */
+    public void grow() {
+        this.grow(10);
     }
 
     /**
