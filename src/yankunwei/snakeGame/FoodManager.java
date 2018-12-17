@@ -7,6 +7,7 @@ import yankunwei.util.SoundPlayer;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.io.Serializable;
 import java.util.Random;
@@ -84,7 +85,7 @@ public class FoodManager implements Serializable {
      */
     public void generateFood() {
         Food food;
-        if (random.nextInt(100) >= 90) {
+        if (random.nextInt(100) >= 10) {
             food = new Heart(generateFoodPosition());
         } else {
             food = new Plus(generateFoodPosition());
@@ -106,6 +107,10 @@ public class FoodManager implements Serializable {
         synchronized (this.foods) {
             for (Food food: foods) {
                 graphics2D.draw(food);
+//                Color color = graphics2D.getColor();
+//                graphics2D.setColor(Color.CYAN);
+//                graphics2D.draw(food.getJudgeBounds());
+//                graphics2D.setColor(color);
             }
         }
     }

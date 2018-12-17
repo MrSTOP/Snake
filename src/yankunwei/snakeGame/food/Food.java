@@ -62,6 +62,22 @@ public abstract class Food implements Shape, Serializable {
     }
 
     /**
+     * 获取食物外边界最大x值，即能够包围食物的Rectangle的x的最大值
+     * @return 食物外边界最大x值
+     */
+    public double getMX() {
+        return this.x + this.width;
+    }
+
+    /**
+     * 获取食物外边界最大y值，即能够包围食物的Rectangle的y的最大值
+     * @return 食物外边界最大y值
+     */
+    public double getMY() {
+        return this.y + this.height;
+    }
+
+    /**
      * 获取食物的宽度
      * @return 食物的宽度
      */
@@ -98,36 +114,34 @@ public abstract class Food implements Shape, Serializable {
      *
      * @return 食物的最小x坐标
      */
-    public double getMinX() {
-        return this.x;
-    }
+    public abstract double getMinX();
 
     /**
      * 获取食物的最小y坐标
      *
      * @return 食物的最小y坐标
      */
-    public double getMinY() {
-        return this.y;
-    }
+    public abstract double getMinY();
 
     /**
      * 获取食物的最大x坐标
      *
      * @return 食物的最大x坐标
      */
-    public double getMaxX() {
-        return this.x + this.width;
-    }
+    public abstract double getMaxX();
 
     /**
      * 获取食物的最大y坐标
      *
      * @return 获取食物的最大y坐标
      */
-    public double getMaxY() {
-        return this.y + this.height;
-    }
+    public abstract double getMaxY();
+
+    /**
+     * 获取判断是否吃到食物的矩形
+     * @return 判断是否吃到食物矩形
+     */
+    public abstract Rectangle2D.Double getJudgeBounds();
 
     /**
      * 设置食物的位置

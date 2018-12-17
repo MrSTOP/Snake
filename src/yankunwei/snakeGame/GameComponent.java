@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.io.*;
 
 public class GameComponent extends JComponent {
@@ -22,7 +23,7 @@ public class GameComponent extends JComponent {
     /**
      * 游戏逻辑帧时长
      */
-    private static final int GAME_LOGIC_TICK = 100;//20
+    private static final int GAME_LOGIC_TICK = 80;//20
     /**
      * 游戏绘制帧时长
      */
@@ -125,7 +126,11 @@ public class GameComponent extends JComponent {
     }
 
     public void gameOver() {
-
+        this.logicThread.interrupt();
+        this.renderThread.interrupt();
+        System.out.println("STOP");
+        JOptionPane.showMessageDialog(this, "游戏结束！总分: " + snake.getScore(), "游戏结束", JOptionPane.INFORMATION_MESSAGE);
+        parent.returnMainInterface();
     }
 
     /**
@@ -192,7 +197,6 @@ public class GameComponent extends JComponent {
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
-        graphics2D.draw(new Plus(100, 100, 100, 100, 20));
         foodManager.paintFood(graphics2D);
         snake.paintSnake(graphics2D);
         graphics2D.drawString(String.valueOf(snake.getScore()), 10, 10);

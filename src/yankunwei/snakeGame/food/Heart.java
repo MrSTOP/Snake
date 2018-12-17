@@ -3,6 +3,7 @@ package yankunwei.snakeGame.food;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  * Description: 心形食物，可以增加生命
@@ -26,13 +27,44 @@ public class Heart extends Food {
     }
 
     @Override
+    public double getMinX() {
+        return this.x + this.width / 10;
+    }
+
+    @Override
+    public double getMinY() {
+        return this.y + this.height / 10;
+    }
+
+    @Override
+    public double getMaxX() {
+        return this.x + (this.width * 9) / 10;
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + (this.height * 9) / 10;
+    }
+
+    @Override
+    public Rectangle2D.Double getJudgeBounds() {
+        return new Rectangle2D.Double(this.getMinX(), this.getMinY(), this.getMaxX() - this.getMinX(), this.getMaxY() - this.getMinY());
+    }
+
+    @Override
     public boolean contains(double x, double y) {
-        return false;
+        return x >= this.getMinX()
+                && x <= this.getMaxX()
+                && y >= this.getMinY()
+                && y <= this.getMaxY();
     }
 
     @Override
     public boolean intersects(double x, double y, double w, double h) {
-        return false;
+        if (this.width <= 0 || this.height <= 0) {
+            return false;
+        }
+        return (x + w > this.getMinX() && y + h > this.getMinY() && x < this.getMaxX() && y < this.getMaxY());
     }
 
     @Override

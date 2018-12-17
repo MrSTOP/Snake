@@ -55,6 +55,31 @@ public class Plus extends Food {
         this.spaceWidth = (this.width - this.edgeWidth) / 2;
     }
 
+    @Override
+    public double getMinX() {
+        return this.x;
+    }
+
+    @Override
+    public double getMinY() {
+        return this.y;
+    }
+
+    @Override
+    public double getMaxX() {
+        return this.x + this.width;
+    }
+
+    @Override
+    public double getMaxY() {
+        return this.y + this.height;
+    }
+
+    @Override
+    public Rectangle2D.Double getJudgeBounds() {
+        return (Rectangle2D.Double) this.getBounds2D();
+    }
+
     /**
      * 获取加号的边缘宽度坐标
      * @return 加号的边缘宽度
@@ -74,13 +99,10 @@ public class Plus extends Food {
      */
     @Override
     public boolean contains(double x, double y) {
-        if (x >= this.x
+        return x >= this.x
                 && x <= this.x + width
                 && y >= this.y
-                && y <= this.y + height){
-            return true;
-        }
-        return false;
+                && y <= this.y + height;
     }
 
     /**

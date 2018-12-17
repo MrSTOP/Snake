@@ -24,11 +24,11 @@ public class HeartIterator implements PathIterator {
     public HeartIterator(Heart heart, AffineTransform affineTransform) {
         this.startX = heart.getCenterX();
         this.startY = heart.getY() + heart.getHeight() / 3;
-        this.ctrl1X = heart.getMinX() - heart.getWidth() / 3;
-        this.ctrl1Y = heart.getMinY() - heart.getHeight() / 3;
+        this.ctrl1X = heart.getX() - heart.getWidth() / 2;
+        this.ctrl1Y = heart.getY() - heart.getHeight() / 2;
         this.ctrl2X = this.startX;
-        this.ctrl2Y = heart.getMaxY();
-        this.ctrl3X = heart.getMaxX() + heart.getWidth() / 3;
+        this.ctrl2Y = heart.getMY();
+        this.ctrl3X = heart.getMX() + heart.getWidth() / 2;
         this.ctrl3Y = this.ctrl1Y;
         this.affineTransform = affineTransform;
     }
