@@ -1,4 +1,6 @@
-package yankunwei.snakeGame;
+package yankunwei.snakeGame.food;
+
+import yankunwei.snakeGame.food.Food;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;

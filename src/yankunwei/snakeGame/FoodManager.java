@@ -1,5 +1,6 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.food.Food;
 import yankunwei.util.SoundPlayer;
 
 import java.awt.*;

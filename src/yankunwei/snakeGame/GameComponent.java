@@ -1,5 +1,7 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.food.Food;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
