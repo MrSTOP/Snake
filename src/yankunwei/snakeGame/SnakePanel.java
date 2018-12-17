@@ -82,6 +82,7 @@ public class SnakePanel extends JPanel {
      * 开始游戏
      */
     public void startGame() {
+        JOptionPane.showMessageDialog(this, "A S W D或上下左右移动，ESC退出", "游戏方法", JOptionPane.INFORMATION_MESSAGE);
         this.changeComponent(GAME_COMPONENT);
         this.gameComponent.requestFocusInWindow();
         this.gameComponent.startGame();
