@@ -16,7 +16,7 @@ public class PlusIterator implements PathIterator {
     private AffineTransform affineTransform;
     private int index;
 
-    public PlusIterator(Food food, AffineTransform affineTransform) {
+    public PlusIterator(Plus food, AffineTransform affineTransform) {
         this.x = food.getX();
         this.y = food.getY();
         this.width = food.getWidth();

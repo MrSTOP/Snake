@@ -1,6 +1,7 @@
 package yankunwei.snakeGame;
 
 import yankunwei.snakeGame.food.Food;
+import yankunwei.snakeGame.food.Plus;
 import yankunwei.util.SoundPlayer;
 
 import java.awt.*;
@@ -37,7 +38,7 @@ public class FoodManager implements Serializable {
         this.frameBorder = frameBorder;
         this.random = new Random(System.nanoTime());
         for (int i = 0; i < 1; i++) {
-            Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
+            Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
             this.foods.add(food);
         }
     }
@@ -83,7 +84,7 @@ public class FoodManager implements Serializable {
      * 生成新的食物
      */
     public void generateFood() {
-        Food food = new Food(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
+        Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height), DEFAULT_FOOD_WIDTH, DEFAULT_FOOD_HEIGHT, DEFAULT_PLUS_EDGE_WIDTH);
             foods.add(food);
     }
 
