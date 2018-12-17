@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * 食物
  */
-public class Food implements Shape, Serializable {
+public abstract class Food implements Shape, Serializable {
     /**
      * 食物x坐标
      */
@@ -27,30 +27,6 @@ public class Food implements Shape, Serializable {
      * 食物高度
      */
     public double height;
-    /**
-     * 加号的边缘宽度
-     */
-    public double edgeWidth;
-    /**
-     * 加号的空白宽度
-     */
-    private double spaceWidth;
-
-    /**
-     * @param x 食物的x坐标
-     * @param y 食物的y坐标
-     * @param width 食物的宽度
-     * @param height 食物的高度
-     * @param edgeWidth 加号的宽度
-     */
-    public Food(double x, double y, double width, double height, double edgeWidth) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.edgeWidth = edgeWidth;
-        this.spaceWidth = (this.width - this.edgeWidth) / 2;
-    }
 
     /**
      * 获取食物的x坐标
@@ -82,14 +58,6 @@ public class Food implements Shape, Serializable {
      */
     public double getHeight() {
         return height;
-    }
-
-    /**
-     * 获取加号的边缘宽度坐标
-     * @return 加号的边缘宽度
-     */
-    public double getEdgeWidth() {
-        return edgeWidth;
     }
 
     /**
@@ -152,25 +120,8 @@ public class Food implements Shape, Serializable {
         return new Rectangle2D.Double(x, y, width, height);
     }
 
-    /**
-     * 判断点是否包含在食物中
-     * @param x 要判断的点的x坐标
-     * @param y 要判断的点的y坐标
-     * @return 如果点包含在食物中返回true否则返回false
-     * @see #contains(Point2D)
-     * @see #contains(Rectangle2D)
-     * @see #contains(double, double, double, double)
-     */
     @Override
-    public boolean contains(double x, double y) {
-        if (x >= this.x
-                && x <= this.x + width
-                && y >= this.y
-                && y <= this.y + height){
-            return true;
-        }
-        return false;
-    }
+    public abstract boolean contains(double x, double y);
 
     /**
      * 获取食物的边界
@@ -185,22 +136,8 @@ public class Food implements Shape, Serializable {
         return this.contains(p.getX(), p.getY());
     }
 
-    /**
-     * 测试另一个Shape是否与此食物相交
-     * @param x Shape的x坐标
-     * @param y Shape的y坐标
-     * @param w Shape的宽度
-     * @param h Shape的高度
-     * @return 如果Shape与食物相交返回true，否则返回false
-     * @see #intersects(Rectangle2D)
-     */
     @Override
-    public boolean intersects(double x, double y, double w, double h) {
-        if (this.width <= 0 || this.height <= 0) {
-            return false;
-        }
-        return (x + w > this.x && y + h > this.y && x < this.x + this.width && y < this.y + this.height);
-    }
+    public abstract boolean intersects(double x, double y, double w, double h);
 
     /**
      * 测试另一个Rectangle2D是否与此食物相交
@@ -251,9 +188,7 @@ public class Food implements Shape, Serializable {
      * @return 此食物的路径遍历器
      */
     @Override
-    public PathIterator getPathIterator(AffineTransform at) {
-        return new FoodIterator(this, at);
-    }
+    public abstract PathIterator getPathIterator(AffineTransform at);
 
     /**
      * 获取此食物的路径遍历器
@@ -262,7 +197,5 @@ public class Food implements Shape, Serializable {
      * @return 此食物的路径遍历器
      */
     @Override
-    public PathIterator getPathIterator(AffineTransform at, double flatness) {
-        return new FoodIterator(this, at);
-    }
+    public abstract PathIterator getPathIterator(AffineTransform at, double flatness);
 }

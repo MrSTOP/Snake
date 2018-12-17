@@ -6,7 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.util.NoSuchElementException;
 
-public class FoodIterator implements PathIterator {
+public class PlusIterator implements PathIterator {
     private double x;
     private double y;
     private double width;
@@ -16,7 +16,7 @@ public class FoodIterator implements PathIterator {
     private AffineTransform affineTransform;
     private int index;
 
-    public FoodIterator(Food food, AffineTransform affineTransform) {
+    public PlusIterator(Food food, AffineTransform affineTransform) {
         this.x = food.getX();
         this.y = food.getY();
         this.width = food.getWidth();
