@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D;
  * Date: 2018-12-17 18:13
  */
 public class Plus extends Food {
+    private static final int DEFAULT_EDGE_LENGTH = 4;
     /**
      * 加号的边缘宽度
      */
@@ -19,6 +20,28 @@ public class Plus extends Food {
      * 加号的空白宽度
      */
     private double spaceWidth;
+
+    public Plus(Point2D point2D) {
+        this(point2D.getX(), point2D.getY());
+    }
+
+    /**
+     * @param x 食物的x坐标
+     * @param y 食物的y坐标
+     */
+    public Plus(double x, double y) {
+        this(x, y, DEFAULT_EDGE_LENGTH);
+    }
+
+    /**
+     * @param x 食物的x坐标
+     * @param y 食物的y坐标
+     * @param edgeWidth 加号的边缘宽度
+     */
+    public Plus(double x, double y, double edgeWidth) {
+        this(x, y,DEFAULT_WIDTH, DEFAULT_HEIGHT, edgeWidth);
+    }
+
     /**
      * @param x 食物的x坐标
      * @param y 食物的y坐标
@@ -27,10 +50,7 @@ public class Plus extends Food {
      * @param edgeWidth 加号的宽度
      */
     public Plus(double x, double y, double width, double height, double edgeWidth) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        super(x, y, width, height);
         this.edgeWidth = edgeWidth;
         this.spaceWidth = (this.width - this.edgeWidth) / 2;
     }

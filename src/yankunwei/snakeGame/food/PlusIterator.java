@@ -1,16 +1,14 @@
 package yankunwei.snakeGame.food;
 
-import yankunwei.snakeGame.food.Food;
-
 import java.awt.geom.AffineTransform;
 import java.awt.geom.PathIterator;
 import java.util.NoSuchElementException;
 
-public class PlusIterator implements PathIterator {
-    private double x;
-    private double y;
-    private double width;
-    private double height;
+    public class PlusIterator implements PathIterator {
+        private double x;
+        private double y;
+        private double width;
+        private double height;
     private double edgeWidth;
     private double spaceWidth;
     private AffineTransform affineTransform;
