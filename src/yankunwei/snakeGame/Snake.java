@@ -79,7 +79,7 @@ public class Snake implements Serializable {
             Rectangle2D rect = new Rectangle2D.Double(headX + 10 * i, headY, 10, 10);
             body.add(rect);
         }
-        this.direction = DIRECTION_DOWN;
+    this.direction = DIRECTION_DOWN;
         this.frameBorder = border;
         this.lastBody = new Vector<>();
         this.score = 0;
