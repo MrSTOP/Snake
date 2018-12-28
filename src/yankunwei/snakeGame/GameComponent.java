@@ -1,5 +1,6 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.dialog.GameOverDialog;
 import yankunwei.snakeGame.food.Food;
 import yankunwei.snakeGame.food.Heart;
 import yankunwei.snakeGame.food.Plus;
@@ -58,23 +59,38 @@ public class GameComponent extends JComponent {
      */
     private Thread renderThread;
 
+    private boolean death;
+
+    private GameOverDialog gameOverDialog;
+
     /**
      * @param parent 父面板
      */
     public GameComponent(SnakePanel parent) {
         this.parent = parent;
-        this.snake = new Snake(this.getPreferredSize());
-        this.foodManager = new FoodManager(this.getPreferredSize());
         this.control = new KeyBoardControl();
         this.setFocusable(true);
         this.setBackground(Color.CYAN);
         this.addKeyListener(this.control);
+        this.gameOverDialog = new GameOverDialog(parent.getParentFrame(), 0);
+        this.initGame();
+    }
+
+    private void initGame() {
+        this.snake = new Snake(this.getPreferredSize());
+        this.foodManager = new FoodManager(this.getPreferredSize());
+        this.death = false;
+        this.currentDirection = Snake.DIRECTION_DOWN;
     }
 
     /**
-     * 开始游戏
+     * 开始游戏，如果是新游戏则初始化游戏
+     * @param isNew 是否是新游戏
      */
-    public void startGame() {
+    public void startGame(boolean isNew) {
+        if (death || isNew) {
+            this.initGame();
+        }
         Runnable logic = () -> {
             long start = System.currentTimeMillis();
             long end;
@@ -93,6 +109,7 @@ public class GameComponent extends JComponent {
             while (!Thread.currentThread().isInterrupted()) {
                 end = System.currentTimeMillis();
                 if (end - start >= GAME_RENDER_TICK) {
+                    start = System.currentTimeMillis();
                     repaint();
                 }
             }
@@ -106,15 +123,13 @@ public class GameComponent extends JComponent {
         this.renderThread.start();
     }
 
-    /**
-     * 停止游戏
-     */
-    public void stopGame() {
-        this.saveGame();
+    public void stopGame(boolean save) {
+        if (save) {
+            this.saveGame();
+        }
         this.logicThread.interrupt();
         this.renderThread.interrupt();
         System.out.println("STOP");
-        parent.returnMainInterface();
     }
 
     /**
@@ -122,14 +137,15 @@ public class GameComponent extends JComponent {
      */
     public void continueGame() {
         this.loadGame();
-        this.startGame();
+        this.startGame(false);
     }
 
     public void gameOver() {
-        this.logicThread.interrupt();
-        this.renderThread.interrupt();
+        this.death = true;
+        this.stopGame(false);
         System.out.println("STOP");
-        JOptionPane.showMessageDialog(this, "游戏结束！总分: " + snake.getScore(), "游戏结束", JOptionPane.INFORMATION_MESSAGE);
+        this.gameOverDialog.setScore(this.snake.getScore());
+        this.gameOverDialog.setVisible(true);
         parent.returnMainInterface();
     }
 
@@ -197,8 +213,8 @@ public class GameComponent extends JComponent {
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
-        foodManager.paintFood(graphics2D);
-        snake.paintSnake(graphics2D);
+        this.foodManager.paintFood(graphics2D);
+        this.snake.paintSnake(graphics2D);
         graphics2D.drawString(String.valueOf(snake.getScore()), 10, 10);
 
     }
@@ -244,7 +260,8 @@ public class GameComponent extends JComponent {
                     }
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    stopGame();
+                    stopGame(true);
+                    parent.returnMainInterface();
                     break;
             }
         }
