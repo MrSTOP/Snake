@@ -270,7 +270,7 @@ public class Snake implements Serializable {
     }
 
     public boolean conflictToBorder() {
-        if (this.head.getMinX() <= 0 || this.head.getMinY() <= 0 || this.head.getMaxX() >= frameBorder.width || this.head.getMaxY() >= frameBorder.height) {
+        if (this.head.getMinX() <= 0 || this.head.getMinY() <= 0 || this.head.getMaxX() >= frameBorder.width + 10 || this.head.getMaxY() >= frameBorder.height + 10) {
             return true;
         } else {
             return false;
