@@ -14,6 +14,9 @@ import java.util.Vector;
  * Date: 2018-12-23 11:46
  */
 public class SQLiteDatabase {
+    /**
+     * 连接数据库并检查表是否存在不存在则创建
+     */
     public static void connectToDatabase() {
         boolean isTableExist = false;
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:Score.db"); Statement statement = connection.createStatement()) {
@@ -44,6 +47,10 @@ public class SQLiteDatabase {
         }
     }
 
+    /**
+     * @param name 玩家昵称
+     * @param score 玩家分数
+     */
     public static void insertScore(String name, int score) {
         connectToDatabase();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:Score.db"); Statement statement = connection.createStatement()) {
@@ -58,6 +65,9 @@ public class SQLiteDatabase {
         }
     }
 
+    /**
+     * @return 存储着玩家分数数据Vector的Vector
+     */
     public static Vector<Vector<Object>> getScore() {
         connectToDatabase();
         Vector<Vector<Object>> scores = new Vector<>();
