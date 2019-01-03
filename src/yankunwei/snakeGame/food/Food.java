@@ -45,6 +45,8 @@ public abstract class Food implements Shape, Serializable {
         this.height = height;
     }
 
+    public abstract int getScore();
+
     /**
      * 获取食物的x坐标
      * @return 食物的x坐标

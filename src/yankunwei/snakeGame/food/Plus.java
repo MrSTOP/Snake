@@ -33,6 +33,11 @@ public class Plus extends Food {
         this(x, y, DEFAULT_EDGE_LENGTH);
     }
 
+    @Override
+    public int getScore() {
+        return 10;
+    }
+
     /**
      * @param x 食物的x坐标
      * @param y 食物的y坐标

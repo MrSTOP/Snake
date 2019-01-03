@@ -27,6 +27,11 @@ public class Heart extends Food {
     }
 
     @Override
+    public int getScore() {
+        return 20;
+    }
+
+    @Override
     public double getMinX() {
         return this.x + this.width / 10;
     }
