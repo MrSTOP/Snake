@@ -14,12 +14,6 @@ import java.util.Vector;
  * Date: 2018-12-23 11:46
  */
 public class SQLiteDatabase {
-    public static void main(String[] args) {
-     SQLiteDatabase sqLiteDatabase = new SQLiteDatabase();
-     sqLiteDatabase.connectToDatabase();
-     sqLiteDatabase.insertScore("LL", 10);
-    }
-
     public static void connectToDatabase() {
         boolean isTableExist = false;
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:Score.db"); Statement statement = connection.createStatement()) {
@@ -51,6 +45,7 @@ public class SQLiteDatabase {
     }
 
     public static void insertScore(String name, int score) {
+        connectToDatabase();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:Score.db"); Statement statement = connection.createStatement()) {
             UUID uuid = UUID.randomUUID();
 //            System.out.println("Database connect succeeded");
@@ -64,6 +59,7 @@ public class SQLiteDatabase {
     }
 
     public static Vector<Vector<Object>> getScore() {
+        connectToDatabase();
         Vector<Vector<Object>> scores = new Vector<>();
         try (Connection connection = DriverManager.getConnection("jdbc:sqlite:Score.db"); Statement statement = connection.createStatement()) {
             String sql = "SELECT * FROM SCORE";
