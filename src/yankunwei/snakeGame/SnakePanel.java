@@ -1,11 +1,13 @@
 package yankunwei.snakeGame;
 
+import yankunwei.snakeGame.dialog.ProcessDialog;
 import yankunwei.util.LookAndFeelHelper;
+import yankunwei.util.SoundPlayer;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.util.Vector;
 
 /**
  * 进行游戏的面板
@@ -14,11 +16,11 @@ public class SnakePanel extends JPanel {
     /**
      * 默认的面板高度
      */
-    private static final int DEFAULT_HEIGHT = 800;
+    public static final int DEFAULT_HEIGHT = 800;
     /**
      * 默认的面板宽度
      */
-    private static final int DEFAULT_WIDTH = 800;
+    public static final int DEFAULT_WIDTH = 800;
 
     /**
      * 主界面代码
@@ -28,6 +30,7 @@ public class SnakePanel extends JPanel {
      * 游戏界面代码
      */
     private static final int GAME_COMPONENT = 1;
+    private static final int SCORE_TABLE = 2;
 
     /**
      * 父窗口引用
@@ -41,6 +44,15 @@ public class SnakePanel extends JPanel {
      * 游戏界面
      */
     private GameComponent gameComponent;
+
+    private ProcessDialog processDialog;
+
+    private JTable scoreTable;
+
+    private JScrollPane scoreScrollPanel;
+
+    private JPanel scorePanel;
+
     /**
      * 布局管理器
      */
@@ -56,6 +68,8 @@ public class SnakePanel extends JPanel {
         this.parentFrame = parent;
         this.mainInterface = new MainInterface(this);
         this.gameComponent = new GameComponent(this);
+        this.processDialog = new ProcessDialog(parent);
+
         this.layout = new CardLayout();
         this.setLayout(layout);
         this.initLayout();
@@ -66,8 +80,21 @@ public class SnakePanel extends JPanel {
      * 初始化布局
      */
     private void initLayout() {
+        this.scoreTable = new JTable();
+        this.scorePanel = new JPanel(new BorderLayout());
+        this.scoreScrollPanel = new JScrollPane(this.scoreTable);
+
+
         this.add(this.mainInterface, "MainInterface");
         this.add(this.gameComponent, "GameComponent");
+        this.scoreTable.setFillsViewportHeight(true);
+        this.scorePanel.add(this.scoreScrollPanel, BorderLayout.CENTER);
+        JButton scoreConfirm = new JButton("确定");
+        scoreConfirm.addActionListener(event -> {
+            returnMainInterface();
+        });
+        this.scorePanel.add(scoreConfirm, BorderLayout.SOUTH);
+        this.add(this.scorePanel, "ScorePanel");
         this.layout.show(this, "MainInterface");
     }
 
@@ -83,15 +110,27 @@ public class SnakePanel extends JPanel {
      */
     public void startGame() {
         JOptionPane.showMessageDialog(this, "A S W D或上下左右移动，ESC退出", "游戏方法", JOptionPane.INFORMATION_MESSAGE);
+        SoundPlayer.getInstant().playBGM();
+        SoundPlayer.getInstant().setVolume(SoundPlayer.getInstant().getBGM(), 10);
+
+        processDialog.showDialog();
         this.changeComponent(GAME_COMPONENT);
         this.gameComponent.requestFocusInWindow();
         this.gameComponent.startGame(true);
+    }
+
+    public void hideOpenGLInitDialog() {
+        this.processDialog.hideDialog();
     }
 
     /**
      * 继续游戏
      */
     public void continueGame() {
+        SoundPlayer.getInstant().playBGM();
+        SoundPlayer.getInstant().setVolume(SoundPlayer.getInstant().getBGM(), 10);
+
+        processDialog.showDialog();
         this.changeComponent(GAME_COMPONENT);
         this.gameComponent.requestFocusInWindow();
         this.gameComponent.continueGame();
@@ -102,6 +141,17 @@ public class SnakePanel extends JPanel {
      */
     public void returnMainInterface() {
         this.changeComponent(MAIN_INTERFACE);
+        SoundPlayer.getInstant().stopBGM();
+    }
+
+    public void showScoreTable() {
+        Vector<Vector<Object>> scores = SQLiteDatabase.getScore();
+        Vector<String> names = new Vector<>();
+        names.add("UUID");
+        names.add("名称");
+        names.add("分数");
+        this.scoreTable.setModel(new DefaultTableModel(scores, names));
+        this.changeComponent(SCORE_TABLE);
     }
 
     /**
@@ -115,6 +165,9 @@ public class SnakePanel extends JPanel {
                 break;
             case GAME_COMPONENT:
                 this.layout.show(this, "GameComponent");
+                break;
+            case SCORE_TABLE:
+                this.layout.show(this, "ScorePanel");
                 break;
         }
     }
