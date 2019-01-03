@@ -18,13 +18,13 @@ public class Snake implements Serializable {
      */
     public static final int DIRECTION_UP = 0;
     /**
-     * 方向常量：向下
-     */
-    public static final int DIRECTION_DOWN = 1;
-    /**
      * 方向常量：向左
      */
-    public static final int DIRECTION_LEFT = 2;
+    public static final int DIRECTION_LEFT = 1;
+    /**
+     * 方向常量：向下
+     */
+    public static final int DIRECTION_DOWN = 2;
     /**
      * 方向常量：向右
      */
@@ -39,6 +39,7 @@ public class Snake implements Serializable {
      * 存储身体的Vector
      */
     private Vector<RectangularShape> body;
+
     public Vector<RectangularShape> lastBody;
     /**
      * 当前运动方向
@@ -79,7 +80,7 @@ public class Snake implements Serializable {
             Rectangle2D rect = new Rectangle2D.Double(headX + 10 * i, headY, 10, 10);
             body.add(rect);
         }
-    this.direction = DIRECTION_DOWN;
+        this.direction = DIRECTION_DOWN;
         this.frameBorder = border;
         this.lastBody = new Vector<>();
         this.score = 0;
@@ -243,11 +244,36 @@ public class Snake implements Serializable {
         }
     }
 
+    public Vector<SnakeRenderInfo> getsnakeRenderInfo() {
+        Vector<SnakeRenderInfo> infos = new Vector<>();
+        synchronized (this.body) {
+            for (RectangularShape shape: body) {
+                float x = (float) (shape.getX() * 2 / frameBorder.width) - 1;
+                float y = 2 - (float) (shape.getY() * 2 / frameBorder.height) - 1;
+                if (shape instanceof RoundRectangle2D) {
+                    infos.add(new SnakeRenderInfo(x, y, SnakeRenderInfo.SnakeType.HEAD, direction));
+                }
+                if (shape instanceof Rectangle2D) {
+                    infos.add(new SnakeRenderInfo(x, y, SnakeRenderInfo.SnakeType.BODY, direction));
+                }
+            }
+        }
+        return infos;
+    }
+
     /**
      * 设置新的窗口大小
      * @param frameBorder 要设置的新窗口大小
      */
     public void setFrameBorder(Dimension frameBorder) {
         this.frameBorder = frameBorder;
+    }
+
+    public boolean conflictToBorder() {
+        if (this.head.getMinX() <= 0 || this.head.getMinY() <= 0 || this.head.getMaxX() >= frameBorder.width || this.head.getMaxY() >= frameBorder.height) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
