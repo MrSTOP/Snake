@@ -1,6 +1,7 @@
 package yankunwei.snakeGame;
 
 import yankunwei.snakeGame.food.Food;
+import yankunwei.snakeGame.food.FoodRenderInfo;
 import yankunwei.snakeGame.food.Heart;
 import yankunwei.snakeGame.food.Plus;
 import yankunwei.util.SoundPlayer;
@@ -57,27 +58,32 @@ public class FoodManager implements Serializable {
         return null;
     }
 
+
     /**
      * 吃掉食物
      * @param food 要被吃掉的食物
+     * @return 得分
      */
-    public void eatFood(Food food) {
-        this.eatFood(food, true);
+    public int eatFood(Food food) {
+        return this.eatFood(food, true);
     }
 
     /**
      * 吃掉食物
      * @param food 要被吃掉的食物
      * @param generateFood 是否生成新的食物
+     * @return 得分
      */
-    public void eatFood(Food food, boolean generateFood) {
-        SoundPlayer.getInstant().playSound("C");
+    public int eatFood(Food food, boolean generateFood) {
+        SoundPlayer.getInstant().playSound("Eat", 30);
+        int score = food.getScore();
         synchronized (this.foods) {
             foods.remove(food);
             if (generateFood) {
                 this.generateFood();
             }
         }
+        return score;
     }
 
     /**
@@ -94,8 +100,12 @@ public class FoodManager implements Serializable {
     }
 
     private Point2D generateFoodPosition() {
-        double x = random.nextInt(frameBorder.width);
-        double y = random.nextInt(frameBorder.height);
+        double x;
+        double y;
+        do {
+            x = random.nextInt(frameBorder.width - 40) + 15;
+            y = random.nextInt(frameBorder.height - 40) + 15;
+        } while (x <= 170 && y <= 80);
         return new Point2D.Double(x, y);
     }
 
@@ -113,5 +123,24 @@ public class FoodManager implements Serializable {
 //                graphics2D.setColor(color);
             }
         }
+    }
+
+    public Vector<FoodRenderInfo> getFoodRenderInfo() {
+        Vector<FoodRenderInfo> points = new Vector<>();
+        synchronized (this.foods) {
+            for (Food food: foods) {
+                float x = (float) (food.getX() * 2 / frameBorder.width) - 1;
+                float y = 2 - (float) (food.getY() * 2 / frameBorder.height) - 1;
+                FoodRenderInfo.FoodType foodType;
+                if (food instanceof Heart) {
+                    foodType = FoodRenderInfo.FoodType.HEART;
+                } else {
+                    foodType = FoodRenderInfo.FoodType.PLUS;
+
+                }
+                points.add(new FoodRenderInfo(x, y, foodType));
+            }
+        }
+        return points;
     }
 }
