@@ -14,6 +14,7 @@ import org.lwjgl.system.MemoryUtil;
 import yankunwei.snakeGame.*;
 import yankunwei.snakeGame.food.FoodRenderInfo;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
@@ -70,6 +71,7 @@ public class OpenGLRender {
     };
     private FoodManager foodManager;
     private Snake snake;
+    private WallManager wallManager;
     private boolean render;
 
     private static OpenGLRender openGLRender = new OpenGLRender();
@@ -119,6 +121,14 @@ public class OpenGLRender {
                         snakeBodyModel.render();
                     }
 
+                    for (Point2D.Float info: wallManager.getWallRenderInfo()) {
+                        Matrix4f transform = new Matrix4f();
+                        transform.translate(info.x, info.y, 0.1F);
+                        snakeBodyTexture.bind(0);
+                        triangleShader.setMatrix4F("transform", transform);
+                        snakeBodyModel.render();
+                        System.out.println(info);
+                    }
 //                Matrix4f transform = new Matrix4f();
 //                triangleShader.setMatrix4F("transform", transform);
 //                    heartTexture.bind(0);
@@ -140,10 +150,11 @@ public class OpenGLRender {
         return openGLRender;
     }
 
-    public void updateRenderInfo(GameComponent gameComponent, Snake snake, FoodManager foodManager) {
+    public void updateRenderInfo(GameComponent gameComponent, Snake snake, FoodManager foodManager, WallManager wallManager) {
         this.gameComponent = gameComponent;
         this.snake = snake;
         this.foodManager = foodManager;
+        this.wallManager = wallManager;
     }
 
     public void stopRender() {

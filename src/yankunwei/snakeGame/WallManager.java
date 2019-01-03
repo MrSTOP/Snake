@@ -14,6 +14,9 @@ import java.util.Vector;
  * Date: 2019-01-03 21:22
  */
 public class WallManager {
+    private static final int WALL_MAX_LENGTH = 120;
+    private static final int WALL_MIN_LENGTH = 30;
+    private static final int WALL_WIDTH = 20;
     /**
      * 窗口大小
      */
@@ -23,6 +26,9 @@ public class WallManager {
     public WallManager(Dimension frameBorder) {
         this.frameBorder = frameBorder;
         this.generateWall();
+        for (RectangularShape s: this.walls) {
+            System.out.println(s);
+        }
     }
 
     public boolean judgeConflict(Snake snake) {
@@ -36,7 +42,7 @@ public class WallManager {
 
     private void generateWall() {
         int wallCount = random.nextInt(6) + 1;
-        for (int i = 0; i < wallCount; i++) {
+        for (int i = 0; i <= wallCount; i++) {
             if (random.nextBoolean()) {
                 this.generateHorizontalWall();
             } else {
@@ -66,7 +72,9 @@ public class WallManager {
     public Vector<Point2D.Float> getWallRenderInfo() {
         Vector<Point2D.Float> infos = new Vector<>();
         for (RectangularShape shape: this.walls) {
-            infos.add(new Point2D.Float((float) shape.getX(), (float) shape.getY()));
+            float x = (float) (shape.getX() * 2 / frameBorder.width) - 1;
+            float y = 2 - (float) (shape.getY() * 2 / frameBorder.height) - 1;
+            infos.add(new Point2D.Float(x, y));
         }
         return infos;
     }

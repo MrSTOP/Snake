@@ -49,6 +49,7 @@ public class GameComponent extends JComponent {
      * 食物管理器
      */
     private FoodManager foodManager;
+    private WallManager wallManager;
     /**
      * 逻辑线程
      */
@@ -98,10 +99,11 @@ public class GameComponent extends JComponent {
     private void initGame() {
         this.snake = new Snake(this.getPreferredSize());
         this.foodManager = new FoodManager(this.getPreferredSize());
+        this.wallManager = new WallManager(this.getPreferredSize());
         this.death = false;
         this.currentDirection = Snake.DIRECTION_DOWN;
         this.openGLRender = OpenGLRender.getInstant();
-        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager);
+        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager, this.wallManager);
     }
 
     /**
@@ -163,7 +165,7 @@ public class GameComponent extends JComponent {
 //        this.renderThread.setName("Render Thread");
         this.logicThread.start();
 //        this.renderThread.start();
-        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager);
+        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager, this.wallManager);
         this.openGLRender.startRender();
     }
 
