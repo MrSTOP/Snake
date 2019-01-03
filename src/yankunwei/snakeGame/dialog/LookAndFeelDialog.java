@@ -5,7 +5,7 @@ import yankunwei.util.LookAndFeelHelper;
 import javax.swing.*;
 import java.awt.*;
 
-public class LookAndFeelDialog extends JDialog {
+public class LookAndFeelDialog extends CommonDialog {
     public LookAndFeelDialog(Frame owner) {
         super(owner, true);
         this.setLocationRelativeTo(owner);
