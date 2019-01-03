@@ -2,6 +2,7 @@ package yankunwei.snakeGame;
 
 import yankunwei.snakeGame.dialog.AboutDialog;
 import yankunwei.snakeGame.dialog.LookAndFeelDialog;
+import yankunwei.util.ToolHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,6 +10,7 @@ import java.awt.*;
 public class MainInterface extends JPanel {
     private static final int BUTTON_GRID_X = 1;
     private SnakePanel parent;
+    private JLabel snakeTitleImage;
     private JButton startGameButton;
     private JButton continueGameButton;
     private JButton exitGameButton;
@@ -22,6 +24,7 @@ public class MainInterface extends JPanel {
     public MainInterface(SnakePanel parent) {
         this.setLayout(new GridBagLayout());
         this.parent = parent;
+        this.snakeTitleImage = new JLabel(new ImageIcon(ToolHelper.getInstant().getURL("/resources/images/cta.png")));
         this.startGameButton = new JButton("开始游戏");
         this.continueGameButton = new JButton("继续游戏");
         this.exitGameButton = new JButton("退出游戏");
@@ -42,19 +45,25 @@ public class MainInterface extends JPanel {
             System.exit(0);
         });
         this.lookAndFeelButton.addActionListener(event -> {
-            this.lookAndFeelDialog.setVisible(true);
+            this.lookAndFeelDialog.showDialog();
+        });
+        this.scoreGameButton.addActionListener(event -> {
+            this.parent.showScoreTable();
         });
         this.aboutGameButton.addActionListener(event -> {
-            this.aboutDialog.setVisible(true);
+            this.aboutDialog.showDialog();
         });
         init();
     }
 
     private void init() {
         Insets insets = new Insets(10, 30, 10, 30);
+        GridBagConstraints titleImageGBC = new GridBagConstraints();
+        titleImageGBC.gridx = BUTTON_GRID_X;
+        titleImageGBC.gridy = 0;
         GridBagConstraints startGBC = new GridBagConstraints();
         startGBC.gridx = BUTTON_GRID_X;
-        startGBC.gridy = 0;
+        startGBC.gridy = 1;
         startGBC.insets = insets;
         startGBC.ipadx = 50;
         startGBC.ipady = 50;
@@ -88,6 +97,7 @@ public class MainInterface extends JPanel {
         lookAndFeelGBC.insets = insets;
         lookAndFeelGBC.ipadx = 50;
         lookAndFeelGBC.ipady = 50;
+        this.add(snakeTitleImage, titleImageGBC);
         this.add(startGameButton, startGBC);
         this.add(continueGameButton, continueGBC);
         this.add(exitGameButton, exitGBC);
