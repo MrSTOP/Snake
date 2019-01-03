@@ -18,22 +18,18 @@ public class SoundPlayer {
 
     private SoundPlayer() {
         soundsByteArray = new HashMap<>();
-        soundsByteArray.put("BGM", initAudioByteArray(this.getURL("Alarm01.wav")));
-        soundsByteArray.put("S2", initAudioByteArray(this.getURL("Alarm02.wav")));
-        soundsByteArray.put("S3", initAudioByteArray(this.getURL("Alarm03.wav")));
-        soundsByteArray.put("S4", initAudioByteArray(this.getURL("Alarm04.wav")));
-        soundsByteArray.put("S5", initAudioByteArray(this.getURL("Alarm05.wav")));
-        soundsByteArray.put("S6", initAudioByteArray(this.getURL("Alarm06.wav")));
-        soundsByteArray.put("S7", initAudioByteArray(this.getURL("Alarm07.wav")));
-        soundsByteArray.put("S8", initAudioByteArray(this.getURL("Alarm08.wav")));
-        soundsByteArray.put("S9", initAudioByteArray(this.getURL("Alarm09.wav")));
-        soundsByteArray.put("S10", initAudioByteArray(this.getURL("Alarm10.wav")));
-        soundsByteArray.put("C", initAudioByteArray(this.getURL("C.wav")));
+        soundsByteArray.put("BGM", initAudioByteArray(ToolHelper.getInstant().getURL(path + "BGM.wav")));
+        soundsByteArray.put("Eat", initAudioByteArray(ToolHelper.getInstant().getURL(path + "Eat.wav")));
         BGM = getAudioClip("BGM");
     }
 
-    private URL getURL(String fileName) {
-        return this.getClass().getResource(path + fileName);
+    public Clip playBGM() {
+        this.BGM = this.playSound("BGM", true, 10);
+        return this.BGM;
+    }
+
+    public void stopBGM() {
+        this.stopSound(this.BGM);
     }
 
     public Clip getBGM() {
@@ -42,6 +38,7 @@ public class SoundPlayer {
 
     public boolean setBGM(Clip BGM) {
         if (BGM != null) {
+            this.BGM.close();
             this.BGM = BGM;
             return true;
         }
@@ -92,18 +89,23 @@ public class SoundPlayer {
     }
 
     public Clip playSound(String soundName) {
-        return this.playSound(soundName, false);
+        return this.playSound(soundName, false, 50);
     }
 
-    public Clip playSound(String soundName, boolean repeat) {
+    public Clip playSound(String soundName, int volumn) {
+        return this.playSound(soundName, false, volumn);
+    }
+
+    public Clip playSound(String soundName, boolean repeat, int volumn) {
         Clip sound = getAudioClip(soundName);
         if (sound != null){
+            this.setVolume(sound, volumn);
             sound.start();
             if (repeat) {
                 sound.loop(Clip.LOOP_CONTINUOUSLY);
             }
         } else {
-            System.out.println("Sound don't exist");
+            throw new IllegalArgumentException("Sound don't exist");
         }
         return sound;
     }
@@ -112,13 +114,14 @@ public class SoundPlayer {
         sound.close();
     }
 
-    public void setVolume(Clip sound, String soundName, int volume) {
+    public void setVolume(Clip sound, double volume) {
         if (sound != null) {
             FloatControl controller = (FloatControl) sound.getControl(FloatControl.Type.MASTER_GAIN);
-            float gain = (float) Math.log10(volume / 100);
+            float gain = (float) (volume - 50);
+            System.out.println("V: " + gain);
             controller.setValue(gain);
         } else {
-            System.out.println("Sound Clip don't exist,can't adjust volume");
+            throw new IllegalArgumentException("Sound Clip don't exist,can't adjust volume");
         }
     }
 }
