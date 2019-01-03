@@ -1,15 +1,14 @@
 package yankunwei.snakeGame;
 
+import yankunwei.newRender.OpenGLRender;
 import yankunwei.snakeGame.dialog.GameOverDialog;
 import yankunwei.snakeGame.food.Food;
-import yankunwei.snakeGame.food.Heart;
-import yankunwei.snakeGame.food.Plus;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 public class GameComponent extends JComponent {
@@ -54,13 +53,30 @@ public class GameComponent extends JComponent {
      * 逻辑线程
      */
     private Thread logicThread;
-    /**
-     * 绘制线程
-     */
-    private Thread renderThread;
 
+//    /**
+//     * 绘制线程
+//     */
+//    private Thread renderThread;
+
+    /**
+     * 蛇是否死亡的标志
+     */
     private boolean death;
 
+    /**
+     * OpenGL绘制的图像
+     */
+    private BufferedImage image;
+
+    /**
+     * 用来渲染的OpenGL
+     */
+    private OpenGLRender openGLRender;
+
+    /**
+     * 游戏结束对话框
+     */
     private GameOverDialog gameOverDialog;
 
     /**
@@ -76,11 +92,16 @@ public class GameComponent extends JComponent {
         this.initGame();
     }
 
+    /**
+     * 初始化游戏
+     */
     private void initGame() {
         this.snake = new Snake(this.getPreferredSize());
         this.foodManager = new FoodManager(this.getPreferredSize());
         this.death = false;
         this.currentDirection = Snake.DIRECTION_DOWN;
+        this.openGLRender = OpenGLRender.getInstant();
+        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager);
     }
 
     /**
@@ -90,37 +111,60 @@ public class GameComponent extends JComponent {
     public void startGame(boolean isNew) {
         if (death || isNew) {
             this.initGame();
+            if (logicThread != null) {
+                this.logicThread.interrupt();
+            }
+//            if (renderThread != null) {
+//                this.renderThread.interrupt();
+//            }
         }
-        Runnable logic = () -> {
+        Runnable logic =() -> {
             long start = System.currentTimeMillis();
             long end;
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted() && !GameComponent.this.death) {
                 end = System.currentTimeMillis();
                 if (end - start >= GAME_LOGIC_TICK) {
                     start = System.currentTimeMillis();
-                    doGameLogic();
+                    snake.move(currentDirection);
+                    Food food = foodManager.canEatFood(snake.head);
+                    if (food != null) {
+//            System.out.println("EAT");
+                        snake.grow(foodManager.eatFood(food));
+                    }
+                    if (snake.conflictToSelf()) {
+//                        System.out.println("CONFLICT");
+                        GameComponent.this.death = true;
+                    }
+                    if (snake.conflictToBorder()) {
+//                        System.out.println("CONFLICT TO BORDER");
+                        GameComponent.this.death = true;
+                    }
                 }
             }
             System.out.println("LOGIC THREAD INTERRUPTED");
-        };
-        Runnable render = () -> {
-            long start = System.currentTimeMillis();
-            long end;
-            while (!Thread.currentThread().isInterrupted()) {
-                end = System.currentTimeMillis();
-                if (end - start >= GAME_RENDER_TICK) {
-                    start = System.currentTimeMillis();
-                    repaint();
-                }
+            if (death) {
+                GameComponent.this.gameOver();
             }
-            System.out.println("RENDER THREAD INTERRUPTED");
         };
-        this.logicThread = new Thread(logic);
-        this.logicThread.setName("Logic Thread");
-        this.renderThread = new Thread(render);
-        this.renderThread.setName("Render Thread");
+//        Runnable render = () -> {
+//            long start = System.currentTimeMillis();
+//            long end;
+//            while (!Thread.currentThread().isInterrupted()) {
+//                end = System.currentTimeMillis();
+//                if (end - start >= GAME_RENDER_TICK) {
+//                    start = System.currentTimeMillis();
+//                    repaint();
+//                }
+//            }
+//            System.out.println("RENDER THREAD INTERRUPTED");
+//        };
+        this.logicThread = new Thread(logic, "Logic Thread");
+//        this.renderThread = new Thread(render);
+//        this.renderThread.setName("Render Thread");
         this.logicThread.start();
-        this.renderThread.start();
+//        this.renderThread.start();
+        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager);
+        this.openGLRender.startRender();
     }
 
     public void stopGame(boolean save) {
@@ -128,8 +172,10 @@ public class GameComponent extends JComponent {
             this.saveGame();
         }
         this.logicThread.interrupt();
-        this.renderThread.interrupt();
-        System.out.println("STOP");
+//        this.renderThread.interrupt();
+        this.openGLRender.stopRender();
+        this.repaint();
+//        System.out.println("STOP");
     }
 
     /**
@@ -143,27 +189,10 @@ public class GameComponent extends JComponent {
     public void gameOver() {
         this.death = true;
         this.stopGame(false);
-        System.out.println("STOP");
+        //System.out.println("STOP");
         this.gameOverDialog.setScore(this.snake.getScore());
-        this.gameOverDialog.setVisible(true);
+        this.gameOverDialog.showDialog();
         parent.returnMainInterface();
-    }
-
-    /**
-     * 执行游戏逻辑
-     */
-    private void doGameLogic() {
-        snake.move(currentDirection);
-        Food food = foodManager.canEatFood(snake.head);
-        if (food != null) {
-            System.out.println("EAT");
-            foodManager.eatFood(food);
-            snake.grow();
-        }
-        if (snake.conflictToSelf()) {
-            System.out.println("CONFLICT");
-            this.gameOver();
-        }
     }
 
     /**
@@ -205,6 +234,10 @@ public class GameComponent extends JComponent {
         }
     }
 
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
     /**
      * 绘制所有组件
      * @param graphics 用于绘制Graphics
@@ -213,10 +246,16 @@ public class GameComponent extends JComponent {
     protected void paintComponent(Graphics graphics) {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
-        this.foodManager.paintFood(graphics2D);
-        this.snake.paintSnake(graphics2D);
-        graphics2D.drawString(String.valueOf(snake.getScore()), 10, 10);
-
+//        this.foodManager.getFoodRenderInfo(graphics2D);
+//        this.snake.getsnakeRenderInfo(graphics2D);
+        if (image != null) {
+            this.parent.hideOpenGLInitDialog();
+            graphics2D.drawImage(image, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, image.getHeight(), image.getWidth(), 0, null);
+        }
+        graphics2D.setFont(new Font("Serif", Font.PLAIN, 60));
+        graphics2D.setColor(Color.GRAY);
+        graphics2D.drawString(String.valueOf(snake.getScore()), 10, 60);
+        graphics2D.dispose();
     }
 
     /**
