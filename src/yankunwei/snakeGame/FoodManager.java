@@ -31,17 +31,23 @@ public class FoodManager implements Serializable {
      */
     private final Vector<Food> foods;
 
+    private WallManager wallManager;
+
+    private Snake snake;
+
     /**
      * @param frameBorder 窗口的大小
      */
-    public FoodManager(Dimension frameBorder) {
+    public FoodManager(Dimension frameBorder, WallManager wallManager, Snake snake) {
         this.foods = new Vector<>();
         this.frameBorder = frameBorder;
+        this.wallManager = wallManager;
+        this.snake = snake;
         this.random = new Random(System.nanoTime());
-        for (int i = 0; i < 1; i++) {
-            Food food = new Plus(random.nextInt(frameBorder.width), random.nextInt(frameBorder.height));
+//        for (int i = 0; i < 1; i++) {
+            Food food = new Plus(generateFoodPosition());
             this.foods.add(food);
-        }
+//        }
     }
 
     /**
@@ -80,7 +86,9 @@ public class FoodManager implements Serializable {
         synchronized (this.foods) {
             foods.remove(food);
             if (generateFood) {
-                this.generateFood();
+//                for (int i = 0; i < 100; i++) {
+                    this.generateFood();
+//                }
             }
         }
         return score;
@@ -102,10 +110,14 @@ public class FoodManager implements Serializable {
     private Point2D generateFoodPosition() {
         double x;
         double y;
+        Rectangle2D rect;
         do {
             x = random.nextInt(frameBorder.width - 40) + 15;
             y = random.nextInt(frameBorder.height - 40) + 15;
-        } while (x <= 170 && y <= 80);
+            rect = new Rectangle2D.Double(x - 20, y - 20,  60, 60);
+        } while ((x <= 170 && y <= 80)
+                || wallManager.judgeConflict(rect)
+                || snake.judgeConflict(rect));
         return new Point2D.Double(x, y);
     }
 

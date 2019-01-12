@@ -3,6 +3,7 @@ package yankunwei.snakeGame;
 import yankunwei.newRender.OpenGLRender;
 import yankunwei.snakeGame.dialog.GameOverDialog;
 import yankunwei.snakeGame.food.Food;
+import yankunwei.util.SoundPlayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -65,6 +66,8 @@ public class GameComponent extends JComponent {
      */
     private boolean death;
 
+    private volatile boolean canDoLogic;
+
     /**
      * OpenGL绘制的图像
      */
@@ -98,9 +101,10 @@ public class GameComponent extends JComponent {
      */
     private void initGame() {
         this.snake = new Snake(this.getPreferredSize());
-        this.foodManager = new FoodManager(this.getPreferredSize());
         this.wallManager = new WallManager(this.getPreferredSize());
+        this.foodManager = new FoodManager(this.getPreferredSize(), this.wallManager, this.snake);
         this.death = false;
+        this.canDoLogic = false;
         this.currentDirection = Snake.DIRECTION_DOWN;
         this.openGLRender = OpenGLRender.getInstant();
         this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager, this.wallManager);
@@ -120,10 +124,16 @@ public class GameComponent extends JComponent {
 //                this.renderThread.interrupt();
 //            }
         }
+
+        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager, this.wallManager);
+        this.openGLRender.startRender();
         Runnable logic =() -> {
             long start = System.currentTimeMillis();
             long end;
             while (!Thread.currentThread().isInterrupted() && !GameComponent.this.death) {
+                if (!GameComponent.this.canDoLogic) {
+                    continue;
+                }
                 end = System.currentTimeMillis();
                 if (end - start >= GAME_LOGIC_TICK) {
                     start = System.currentTimeMillis();
@@ -139,6 +149,9 @@ public class GameComponent extends JComponent {
                     }
                     if (snake.conflictToBorder()) {
 //                        System.out.println("CONFLICT TO BORDER");
+                        GameComponent.this.death = true;
+                    }
+                    if (wallManager.judgeConflict(snake)) {
                         GameComponent.this.death = true;
                     }
                 }
@@ -163,10 +176,8 @@ public class GameComponent extends JComponent {
         this.logicThread = new Thread(logic, "Logic Thread");
 //        this.renderThread = new Thread(render);
 //        this.renderThread.setName("Render Thread");
-        this.logicThread.start();
 //        this.renderThread.start();
-        this.openGLRender.updateRenderInfo(this, this.snake, this.foodManager, this.wallManager);
-        this.openGLRender.startRender();
+        this.logicThread.start();
     }
 
     public void stopGame(boolean save) {
@@ -190,6 +201,7 @@ public class GameComponent extends JComponent {
 
     public void gameOver() {
         this.death = true;
+        SoundPlayer.getInstant().playSound("Fail", 40);
         this.stopGame(false);
         //System.out.println("STOP");
         this.gameOverDialog.setScore(this.snake.getScore());
@@ -205,6 +217,7 @@ public class GameComponent extends JComponent {
              ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
             this.snake = (Snake) objectInputStream.readObject();
             this.foodManager = (FoodManager) objectInputStream.readObject();
+            this.wallManager = (WallManager) objectInputStream.readObject();
             this.currentDirection = objectInputStream.readInt();
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(this.parent, "文件不存在", "Error", JOptionPane.ERROR_MESSAGE);
@@ -226,6 +239,7 @@ public class GameComponent extends JComponent {
              ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream)) {
             objectOutputStream.writeObject(this.snake);
             objectOutputStream.writeObject(this.foodManager);
+            objectOutputStream.writeObject(this.wallManager);
             objectOutputStream.writeInt(this.currentDirection);
         } catch (FileNotFoundException e) {
             JOptionPane.showMessageDialog(this.parent, "文件不存在", "Error", JOptionPane.ERROR_MESSAGE);
@@ -236,6 +250,18 @@ public class GameComponent extends JComponent {
         }
     }
 
+    /**
+     * 用于设置是否允许游戏逻辑的运行
+     * @param canDoLogic 是否允许执行游戏逻辑
+     */
+    public void setCanDoLogic(boolean canDoLogic) {
+        this.canDoLogic = canDoLogic;
+    }
+
+    /**
+     * 用于OpenGL渲染线程传递画面
+     * @param image OpenGL绘制好的画面
+     */
     public void setImage(BufferedImage image) {
         this.image = image;
     }
@@ -249,9 +275,10 @@ public class GameComponent extends JComponent {
         Graphics2D graphics2D = (Graphics2D) graphics;
         super.paintComponent(graphics);
 //        this.foodManager.getFoodRenderInfo(graphics2D);
-//        this.snake.getsnakeRenderInfo(graphics2D);
+//        this.snake.getSnakeRenderInfo(graphics2D);
         if (image != null) {
             this.parent.hideOpenGLInitDialog();
+            this.setCanDoLogic(true);
             graphics2D.drawImage(image, 0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT, 0, image.getHeight(), image.getWidth(), 0, null);
         }
         graphics2D.setFont(new Font("Serif", Font.PLAIN, 60));
@@ -303,6 +330,9 @@ public class GameComponent extends JComponent {
                 case KeyEvent.VK_ESCAPE:
                     stopGame(true);
                     parent.returnMainInterface();
+                    break;
+                case KeyEvent.VK_P:
+                    canDoLogic = !canDoLogic;
                     break;
             }
         }

@@ -6,7 +6,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
- * Description: 心形食物，可以增加生命
+ * Description: 心形食物，//可以增加生命
  * @author 闫坤炜
  * Date: 2018-12-17 18:11
  */

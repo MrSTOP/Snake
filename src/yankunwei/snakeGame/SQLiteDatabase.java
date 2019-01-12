@@ -1,8 +1,6 @@
 package yankunwei.snakeGame;
 
-import com.sun.javafx.binding.StringFormatter;
-import yankunwei.util.Score;
-
+import javax.swing.*;
 import java.sql.*;
 import java.util.UUID;
 import java.util.Vector;
@@ -43,6 +41,7 @@ public class SQLiteDatabase {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage(), "数据库错误", JOptionPane.WARNING_MESSAGE);
             System.exit(-1);
         }
     }

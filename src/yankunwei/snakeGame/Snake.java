@@ -140,20 +140,34 @@ public class Snake implements Serializable {
         return this.score;
     }
 
+    public boolean judgeConflict(Rectangle2D rectangle2D) {
+        synchronized (this.body) {
+            for (RectangularShape shape :
+                    this.body) {
+                if (shape.intersects(rectangle2D)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * 判断是否碰到自己
      * @return 如果碰到自己返回true，否则返回false
      */
     public boolean conflictToSelf() {
-        for (RectangularShape shape: body) {
-            if (shape instanceof RoundRectangle2D.Double) {
-                continue;
+        synchronized (this.body) {
+            for (RectangularShape shape: body) {
+                if (shape instanceof RoundRectangle2D.Double) {
+                    continue;
+                }
+                if (shape.intersects(head.getFrame())) {
+                    return true;
+                }
             }
-            if (shape.intersects(head.getFrame())) {
-                return true;
-            }
+            return false;
         }
-        return false;
     }
 
     /**
@@ -244,7 +258,7 @@ public class Snake implements Serializable {
         }
     }
 
-    public Vector<SnakeRenderInfo> getsnakeRenderInfo() {
+    public Vector<SnakeRenderInfo> getSnakeRenderInfo() {
         Vector<SnakeRenderInfo> infos = new Vector<>();
         synchronized (this.body) {
             for (RectangularShape shape: body) {

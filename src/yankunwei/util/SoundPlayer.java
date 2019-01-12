@@ -20,11 +20,16 @@ public class SoundPlayer {
         soundsByteArray = new HashMap<>();
         soundsByteArray.put("BGM", initAudioByteArray(ToolHelper.getInstant().getURL(path + "BGM.wav")));
         soundsByteArray.put("Eat", initAudioByteArray(ToolHelper.getInstant().getURL(path + "Eat.wav")));
+        soundsByteArray.put("Fail", initAudioByteArray(ToolHelper.getInstant().getURL(path + "Fail.wav")));
         BGM = getAudioClip("BGM");
     }
 
     public Clip playBGM() {
-        this.BGM = this.playSound("BGM", true, 10);
+        return this.playBGM(20);
+    }
+
+    public Clip playBGM(float volume) {
+        this.BGM = this.playSound("BGM", true, volume);
         return this.BGM;
     }
 
@@ -92,20 +97,20 @@ public class SoundPlayer {
         return this.playSound(soundName, false, 50);
     }
 
-    public Clip playSound(String soundName, int volumn) {
-        return this.playSound(soundName, false, volumn);
+    public Clip playSound(String soundName, float volume) {
+        return this.playSound(soundName, false, volume);
     }
 
-    public Clip playSound(String soundName, boolean repeat, int volumn) {
+    public Clip playSound(String soundName, boolean repeat, float volume) {
         Clip sound = getAudioClip(soundName);
         if (sound != null){
-            this.setVolume(sound, volumn);
+            this.setVolume(sound, volume);
             sound.start();
             if (repeat) {
                 sound.loop(Clip.LOOP_CONTINUOUSLY);
             }
         } else {
-            throw new IllegalArgumentException("Sound don't exist");
+            throw new IllegalArgumentException("Sound don't exist, can't play sound");
         }
         return sound;
     }
@@ -114,14 +119,14 @@ public class SoundPlayer {
         sound.close();
     }
 
-    public void setVolume(Clip sound, double volume) {
+    public void setVolume(Clip sound, float volume) {
         if (sound != null) {
             FloatControl controller = (FloatControl) sound.getControl(FloatControl.Type.MASTER_GAIN);
-            float gain = (float) (volume - 50);
+            float gain = volume - 50;
             System.out.println("V: " + gain);
             controller.setValue(gain);
         } else {
-            throw new IllegalArgumentException("Sound Clip don't exist,can't adjust volume");
+            throw new IllegalArgumentException("Sound Clip don't exist, can't adjust volume");
         }
     }
 }

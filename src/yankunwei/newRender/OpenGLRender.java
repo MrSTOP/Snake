@@ -52,6 +52,7 @@ public class OpenGLRender {
     private imgTexture snakeBodyTexture;
     private imgTexture snakeHeadTexture;
     private imgTexture heartTexture;
+    private imgTexture wallTexture;
 
 
     private GameComponent gameComponent;
@@ -105,7 +106,7 @@ public class OpenGLRender {
                         snakeBodyModel.render();
                     }
 
-                    for (SnakeRenderInfo info: snake.getsnakeRenderInfo()) {
+                    for (SnakeRenderInfo info: snake.getSnakeRenderInfo()) {
 //                    System.out.println(point);
                         Matrix4f transform = new Matrix4f();
                         transform.translate(info.x, info.y, 0.1F);
@@ -120,14 +121,12 @@ public class OpenGLRender {
                         triangleShader.setMatrix4F("transform", transform);
                         snakeBodyModel.render();
                     }
-
+                    wallTexture.bind(0);
                     for (Point2D.Float info: wallManager.getWallRenderInfo()) {
                         Matrix4f transform = new Matrix4f();
                         transform.translate(info.x, info.y, 0.1F);
-                        snakeBodyTexture.bind(0);
                         triangleShader.setMatrix4F("transform", transform);
                         snakeBodyModel.render();
-                        System.out.println(info);
                     }
 //                Matrix4f transform = new Matrix4f();
 //                triangleShader.setMatrix4F("transform", transform);
@@ -220,6 +219,7 @@ public class OpenGLRender {
         this.snakeBodyTexture = new imgTexture(new String[]{"/resources/images/snake.png"});
         this.snakeHeadTexture = new imgTexture(new String[]{"/resources/images/snake_head.png"});
         this.heartTexture = new imgTexture(new String[]{"/resources/images/heart.png"});
+        this.wallTexture = new imgTexture(new String[]{"/resources/images/wall.png"});
     }
 
     protected void clean() {

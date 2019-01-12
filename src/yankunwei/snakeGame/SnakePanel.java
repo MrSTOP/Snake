@@ -5,7 +5,6 @@ import yankunwei.util.LookAndFeelHelper;
 import yankunwei.util.SoundPlayer;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.Vector;
 
@@ -81,7 +80,9 @@ public class SnakePanel extends JPanel {
      */
     private void initLayout() {
         this.scoreTable = new JTable();
+        this.scoreTable.setFont(new Font("Wei Ruan Ya Hei", Font.PLAIN, 20));
         this.scorePanel = new JPanel(new BorderLayout());
+        scoreTable.setRowHeight(30);
         this.scoreScrollPanel = new JScrollPane(this.scoreTable);
 
 
@@ -110,10 +111,9 @@ public class SnakePanel extends JPanel {
      */
     public void startGame() {
         JOptionPane.showMessageDialog(this, "A S W D或上下左右移动，ESC退出", "游戏方法", JOptionPane.INFORMATION_MESSAGE);
-        SoundPlayer.getInstant().playBGM();
-        SoundPlayer.getInstant().setVolume(SoundPlayer.getInstant().getBGM(), 10);
-
         processDialog.showDialog();
+
+        SoundPlayer.getInstant().playBGM(20);
         this.changeComponent(GAME_COMPONENT);
         this.gameComponent.requestFocusInWindow();
         this.gameComponent.startGame(true);
@@ -127,8 +127,7 @@ public class SnakePanel extends JPanel {
      * 继续游戏
      */
     public void continueGame() {
-        SoundPlayer.getInstant().playBGM();
-        SoundPlayer.getInstant().setVolume(SoundPlayer.getInstant().getBGM(), 10);
+        SoundPlayer.getInstant().playBGM(20);
 
         processDialog.showDialog();
         this.changeComponent(GAME_COMPONENT);
@@ -150,7 +149,7 @@ public class SnakePanel extends JPanel {
         names.add("UUID");
         names.add("名称");
         names.add("分数");
-        this.scoreTable.setModel(new DefaultTableModel(scores, names));
+        this.scoreTable.setModel(new NonEditableDefaultTableModel(scores, names));
         this.changeComponent(SCORE_TABLE);
     }
 

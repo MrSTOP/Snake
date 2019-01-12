@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
+import java.io.Serializable;
 import java.util.Random;
 import java.util.Vector;
 
@@ -13,10 +14,7 @@ import java.util.Vector;
  * @author 闫坤炜
  * Date: 2019-01-03 21:22
  */
-public class WallManager {
-    private static final int WALL_MAX_LENGTH = 120;
-    private static final int WALL_MIN_LENGTH = 30;
-    private static final int WALL_WIDTH = 20;
+public class WallManager implements Serializable {
     /**
      * 窗口大小
      */
@@ -26,9 +24,6 @@ public class WallManager {
     public WallManager(Dimension frameBorder) {
         this.frameBorder = frameBorder;
         this.generateWall();
-        for (RectangularShape s: this.walls) {
-            System.out.println(s);
-        }
     }
 
     public boolean judgeConflict(Snake snake) {
@@ -40,30 +35,44 @@ public class WallManager {
         return false;
     }
 
+    public boolean judgeConflict(Rectangle2D s) {
+        for (RectangularShape shape: this.walls) {
+            if (shape.intersects(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void generateWall() {
-        int wallCount = random.nextInt(6) + 1;
+        int wallCount = random.nextInt(30) + 1;
+        int x = 0;
+        int y = 0;
         for (int i = 0; i <= wallCount; i++) {
+            int length = random.nextInt(10) + 5;
             if (random.nextBoolean()) {
-                this.generateHorizontalWall();
+                do {
+                    x = random.nextInt(frameBorder.width - 20) + 20;
+                    y = random.nextInt(frameBorder.height - 160) + 20;
+                } while (x <= 300 && y <= 400);
+                this.generateHorizontalWall(length, x, y);
             } else {
-                this.generateVerticalWall();
+                do {
+                    x = random.nextInt(frameBorder.width - 160) + 20;
+                    y = random.nextInt(frameBorder.height - 20) + 20;
+                } while (x <= 300 && y <= 400);
+                this.generateVerticalWall(length, x, y);
             }
         }
     }
 
-    private void generateVerticalWall() {
-        int length = random.nextInt(10) + 5;
-        int x = random.nextInt(frameBorder.width - 160) + 20;
-        int y = random.nextInt(frameBorder.height - 20) + 20;
+    private void generateVerticalWall(int length, int x, int y) {
         for (int i = 0; i < length; i++) {
             walls.add(new Rectangle2D.Double(x, y + i * 10, 10, 10));
         }
     }
 
-    private void generateHorizontalWall() {
-        int length = random.nextInt(10) + 5;
-        int x = random.nextInt(frameBorder.width - 20) + 20;
-        int y = random.nextInt(frameBorder.height - 160) + 20;
+    private void generateHorizontalWall(int length, int x, int y) {
         for (int i = 0; i < length; i++) {
             walls.add(new Rectangle2D.Double(x + i * 10, y, 10, 10));
         }

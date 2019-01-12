@@ -30,6 +30,7 @@ public class GameOverDialog extends CommonDialog {
                 JOptionPane.showMessageDialog(this, "玩家名不能为空！", "警告", JOptionPane.WARNING_MESSAGE);
             }
             else{
+                confirm.setEnabled(false);
                 SQLiteDatabase.insertScore(playerName, this.score);
                 this.setVisible(false);
             }
@@ -49,6 +50,12 @@ public class GameOverDialog extends CommonDialog {
         this.add(confirm);
         this.relocation();
         this.pack();
+    }
+
+    @Override
+    public void showDialog() {
+        this.confirm.setEnabled(true);
+        super.showDialog();
     }
 
     public void setScore(int score) {
